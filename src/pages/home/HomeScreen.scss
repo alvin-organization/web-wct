@@ -1,0 +1,11 @@
+@import "../../variables";
+.container-home {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: yellow;
+  //   align-content: center;
+  //   align-items: center;
+}

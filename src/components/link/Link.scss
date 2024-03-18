@@ -25,6 +25,7 @@
     &:hover .link-dropdown-content {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
+      white-space: nowrap;
       grid-gap: 32px;
     }
   }

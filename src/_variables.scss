@@ -139,9 +139,24 @@ a {
 .label-input {
   margin: $m;
   font-size: $size-s;
-  // margin: $m 0;
 }
 
 .label-input.required {
   color: $danger;
+}
+// margin: $m 0;
+
+.label-movie {
+  margin: $m $m * 2;
+  background-color: $a-primary;
+  height: $size-ml;
+  // width: 90%;
+  display: flex;
+  align-items: center;
+}
+.Label-category {
+  margin-left: 32px;
+  font-size: $size-sl;
+  text-align: center;
+  background-color: $a-primary;
 }

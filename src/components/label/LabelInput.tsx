@@ -27,3 +27,17 @@ export const Label: React.FC<LabelProps> = ({
     </label>
   );
 };
+
+export const LabelCategory: React.FC<LabelProps> = ({
+  htmlFor,
+  className,
+  textLabel,
+}) => {
+  return (
+    <div className="label-movie">
+      <label htmlFor={htmlFor} className={`Label-category ${className}`}>
+        {textLabel}
+      </label>
+    </div>
+  );
+};

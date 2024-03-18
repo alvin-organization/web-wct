@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "./button/Button";
 import { InputText } from "./input/InputText";
-import { Label, LabelInput } from "./label/LabelInput";
+import { Label, LabelCategory, LabelInput } from "./label/LabelInput";
 import { Container } from "./container/Container";
 import { Header, HeaderLogo } from "../layout/header/Header";
 import { LinkList, LinkNavigation } from "./link/Link";
@@ -19,11 +19,11 @@ const ComponentTest = () => {
       <div>
         <Header />
       </div>
-      <div>
+      {/* <div>
         <LinkList categories={data} />
-      </div>
+      </div> */}
       <div>
-        <Button textButton="Go to About" />
+        {/* <Button textButton="Go to About" />
         <LabelInput
           htmlFor="password"
           className="required"
@@ -35,13 +35,13 @@ const ComponentTest = () => {
           value={username}
           onChange={handleUsernameChange}
           placeholder="Enter username"
-        />
-        <br></br>
-        <Label htmlFor="password" textLabel="singup" />
-        <Container>
+        /> */}
+        {/* <Label htmlFor="password" textLabel="singup" /> */}
+        {/* <Container>
           <p>Welcome to My App</p>
           <p>This is the content inside the container.</p>
-        </Container>
+        </Container> */}
+        <LabelCategory htmlFor="popluar" textLabel="Popluar" />
       </div>
     </>
   );

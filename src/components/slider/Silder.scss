@@ -27,17 +27,23 @@
   .silder {
     height: 450px;
     width: 90%;
-    // background-color: red;
+
     .silder-group {
       position: relative;
+
+      a:before {
+        background: none;
+        background-color: none;
+      }
+      a:hover + .silder-over-image {
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+
       .silder-image {
         width: 1120px;
         height: 400px;
         object-fit: cover;
-        &:hover + .silder-over-image {
-          display: block;
-        }
-        // border: 1px solid white;
       }
 
       .silder-over-image {
