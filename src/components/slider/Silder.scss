@@ -1,0 +1,147 @@
+@import "../../variables";
+.container-slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .arrow-slide {
+    font-size: 32px;
+    border: none;
+  }
+  .btn-arrow {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    button {
+      height: 450px;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  a {
+    padding: 0;
+    margin: 0;
+  }
+
+  .silder {
+    height: 450px;
+    width: 90%;
+    // background-color: red;
+    .silder-group {
+      position: relative;
+      .silder-image {
+        width: 1120px;
+        height: 400px;
+        object-fit: cover;
+        &:hover + .silder-over-image {
+          display: block;
+        }
+        // border: 1px solid white;
+      }
+
+      .silder-over-image {
+        position: absolute;
+        border-right: 4px solid $a-primary;
+        top: 0;
+        right: 0;
+        width: 380px; /* Equivalent to 96px */
+        height: 400px; /* Equivalent to 96px */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: $p;
+        background-color: $primary;
+        opacity: 0;
+        transition: opacity 0.3s;
+        &:hover {
+          opacity: 0.8;
+        }
+        .silder-over-title {
+          color: $text;
+          font-size: 32px; /* Equivalent to 4xl */
+          opacity: 1;
+          transition: opacity 0.3s;
+        }
+        .silder-over-text {
+          opacity: 1;
+          transition: opacity 0.3s;
+        }
+        .silder-over-box {
+          height: 100px;
+          width: 350px;
+          border: 1px solid #f00;
+          margin-top: $m;
+          padding: $p;
+          color: #fff;
+          font-size: 16px;
+          display: flex;
+          flex-direction: column;
+          .box-title {
+            color: $a-primary;
+            font-weight: bold;
+            padding: 2px;
+            .sub-imbs {
+              background-color: $warning;
+              padding: 0.5px 16px;
+              color: $primary;
+            }
+          }
+        }
+        .btn-watch {
+          font-size: $size-s;
+          background-color: $a-primary;
+          color: $text;
+          padding: $p;
+          margin: $m;
+          border: none;
+          border-radius: $radius;
+          cursor: pointer;
+          &:hover {
+            background-color: $a-secondary;
+          }
+        }
+      }
+    }
+  }
+
+  .slick-slider ul {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+  svg {
+    fill: $a-primary;
+  }
+  .custom-dots {
+    padding: 0; // Remove default padding
+    display: inline;
+    width: 100%;
+    list-style-type: none;
+    margin: 0; // Remove default margin
+    li {
+      display: inline;
+      button {
+        display: none;
+        border: none;
+      }
+      &::after {
+        content: ""; // Change the content of the pseudo-element
+        display: inline-block;
+        width: 5px; // Adjust width as needed
+        height: 5px; // Adjust height as needed
+        background-color: $secondary; // Customize dot color
+        border-radius: 50%; // Make it circular
+        margin: 0 2px;
+      }
+    }
+    .slick-active {
+      &::after {
+        background-color: $a-secondary;
+        width: 7px; // Adjust width as needed
+        height: 7px;
+        // Customize active dot color
+      }
+    }
+  }
+}

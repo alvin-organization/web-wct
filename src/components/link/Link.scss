@@ -1,0 +1,31 @@
+@import "../../variables";
+.navbar-container-links {
+  display: flex;
+
+  .link-dropdown {
+    position: relative;
+
+    .category-title {
+      cursor: pointer;
+    }
+
+    .link-dropdown-content {
+      display: none;
+      position: absolute;
+      border-left: 2px solid $a-primary;
+      z-index: 100;
+      text-align: start;
+      padding: $p;
+      margin-top: 2px;
+      a {
+        text-decoration: none;
+      }
+    }
+
+    &:hover .link-dropdown-content {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-gap: 32px;
+    }
+  }
+}
