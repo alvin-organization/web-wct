@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Logo } from "../../components/logo/Logo"; // Adjust import for Logo
-import NavbarLink from "../../data/navbarLink.json"; // Adjust import for JSON data
-import "./Header.scss";
-import { InputText } from "../../components/input/InputText";
-import { Link, LinkList, LinkNavigation } from "../../components/link/Link";
-import data from "../../data/_test.json";
+import { Logo } from "../components/Logo"; // Adjust import for Logo
+import NavbarLink from "../data/navbarLink.json"; // Adjust import for JSON data
+import { InputText } from "../components/input/InputText";
+import { Link, LinkList, LinkNavigation } from "../components/link/Link";
+import data from "../data/_test.json";
 
 export const HeaderLogo = () => {
   return (
@@ -28,31 +27,32 @@ export const Header = () => {
     });
   };
   return (
-    <div className="box" style={{ justifyContent: "space-between" }}>
+    <div className="flex items-center justify-between h-20 px-4">
       <div>
         <Logo />
       </div>
-      <div className="navbarlink">
+      <div className="flex items-center">
         <Link title="Home" url="home" />
         <LinkList categories={data} />
       </div>
-      <div className="search">
+      <div className="flex items-center">
         <form>
           <InputText
             type="text"
             value={formData.search}
             onChange={(value) => handleChange("search", value)}
             placeholder="Search"
+            className="m-2"
           />
         </form>
-        <div className="navbarlink-a">
-          <a href="">Expoler</a>
+        <div className="m-2">
+          <Link url="explore" title="Explore" />
         </div>
       </div>
-      <div className="navbarlink-a">
-        <a href="signup"> Sign Up</a>
-        <span>|</span>
-        <a href="signin"> Sign In</a>
+      <div className="flex items-center">
+        <Link url="signup" title="Sign Up" />
+        <span className="text-aprimary">|</span>
+        <Link url="signin" title="Sign In" />
       </div>
     </div>
   );

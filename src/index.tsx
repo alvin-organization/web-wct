@@ -4,7 +4,12 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import "./index.scss";
+import "./index.css";
+<link
+  href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Noto+Sans+Khmer&family=Roboto&display=swap"
+  rel="stylesheet"
+></link>;
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);

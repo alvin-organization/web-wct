@@ -1,9 +1,8 @@
 import React from "react";
-import "./Footer.scss"; // Import CSS file for styling
 
 const Footer: React.FC = () => {
   return (
-    <footer className="footer">
+    <footer className="h-20 flex items-center justify-center ">
       <p>&copy; 2024 Team 12 Vial Brathna Davith Hormenh Sophalla</p>
     </footer>
   );

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { InputText } from "../../components/input/InputText";
-import { HeaderLogo } from "../../layout/header/Header";
+import { HeaderLogo } from "../../layout/Header";
 import "./SignUp.scss";
 import { Label, LabelInput } from "../../components/label/LabelInput";
 import Button from "../../components/button/Button";
 import { Link } from "../../components/link/Link";
-import Footer from "../../layout/footer/Footer";
+import Footer from "../../layout/Footer";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({

@@ -1,13 +1,54 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Import Tailwind base, components, and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply global styles */
+* {
+  background-color: #000;
+  color: #edf2f4;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Noto+Sans+Khmer&family=Roboto&display=swap");
+
+/* Override font family for the entire document */
+html {
+  font-family: "Architects Daughter", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+a {
+  background: none;
+  padding: 0;
+  position: relative;
+  text-decoration: none;
+  color: #edf2f4; /* Assuming $text color variable */
+  transition: color 0.3s;
+  cursor: pointer;
+  margin: 8px; /* Assuming $m margin variable */
+
+  /* Styling for ::before pseudo-element */
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #d90429; /* Assuming $a-primary color variable */
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.5s ease;
+  }
+
+  /* Hover effect */
+  &:hover {
+    font-weight: bold;
+    &:before {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+  }
 }

@@ -1,12 +1,12 @@
 import React from "react";
 import "./Link.scss";
 
-interface Link {
+interface LinkProps {
   url: string;
   title: string;
 }
 
-export const Link: React.FC<Link> = ({ url, title }) => {
+export const Link: React.FC<LinkProps> = ({ url, title }) => {
   return <a href={url}>{title}</a>;
 };
 
