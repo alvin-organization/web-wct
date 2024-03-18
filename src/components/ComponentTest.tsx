@@ -6,6 +6,8 @@ import { Container } from "./container/Container";
 import { Header, HeaderLogo } from "../layout/header/Header";
 import { LinkList, LinkNavigation } from "./link/Link";
 import data from "../data/_test.json";
+import movieData from "../data/movieCover.json";
+import Poster from "./poster/Poster";
 
 const ComponentTest = () => {
   const [username, setUsername] = useState("");
@@ -42,6 +44,15 @@ const ComponentTest = () => {
           <p>This is the content inside the container.</p>
         </Container> */}
         <LabelCategory htmlFor="popluar" textLabel="Popluar" />
+        <div>
+          {movieData.map((movie, index) => (
+            <Poster
+              key={index}
+              imageUrl={movie.imageUrl}
+              movieName={movie.movieName}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
