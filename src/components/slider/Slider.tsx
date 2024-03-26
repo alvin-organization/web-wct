@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { FaTv } from "react-icons/fa";
 import "./Silder.scss";
+import { Link } from "../Link";
+import { ButtonLink } from "../Button";
 
 interface SliderGroupProps {
   imageUrl: string;
@@ -22,30 +24,47 @@ export const SliderGroup: FC<SliderGroupProps> = ({
   imdb,
 }) => {
   return (
-    <div className="silder-group">
+    <div className="silder-group group">
       <a href="moviewatch">
         <img className="silder-image" src={imageUrl} alt={title} />
       </a>
-      <div className="silder-over-image">
-        <span className="silder-over-title">{title}</span>
-        <span className="silder-over-text">{description}</span>
-        <div className="silder-over-box">
-          <span className="box-title">
-            Genre : <a href="#">{genre}</a>
+      <div className=" group-hover:opacity-80 absolute border-r-4 border-aprimary top-0 right-0 w-96 h-96 flex flex-col items-center px-4 py-2 bg-primary opacity-0 transition-opacity duration-300 hover:opacity-80">
+        <a
+          href="/"
+          className=" text-3xl text-aprimary font-bold opacity-100 transition-opacity duration-300 my-2"
+        >
+          {title}
+        </a>
+        <span className="opacity-100 transition-opacity duration-300 my-2">
+          {description}
+        </span>
+        <div className="h-40 w-full border border-aprimary my-2 p-2 flex flex-col justify-between">
+          <span>
+            Genre :{" "}
+            <a href="#" className="hover:font-bold text-aprimary">
+              {genre}
+            </a>
           </span>
-          <span className="box-title">
+          <span>
             Duration: <span>{duration}</span>
           </span>
-          <span className="box-title">
+          <span>
             Release: <span>{releaseYear}</span>
           </span>
-          <span className="box-title">
-            IMDB: <span className="sub-imbs">{imdb}</span>
+          <span>
+            IMDB:{" "}
+            <span className="bg-warning px-2 text-center text-primary">
+              {imdb}
+            </span>
           </span>
         </div>
-        <a href="moviewatch" className="btn-watch">
-          <FaTv style={{ marginRight: "8px" }} /> Watching Now
-        </a>
+        <ButtonLink
+          href="#"
+          text="Watching"
+          icon={
+            <FaTv style={{ fill: "white", backgroundColor: "transparent" }} />
+          }
+        />
       </div>
     </div>
   );

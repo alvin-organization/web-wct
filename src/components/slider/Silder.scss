@@ -42,71 +42,8 @@
 
       .silder-image {
         width: 1120px;
-        height: 400px;
+        height: 380px;
         object-fit: cover;
-      }
-
-      .silder-over-image {
-        position: absolute;
-        border-right: 4px solid $a-primary;
-        top: 0;
-        right: 0;
-        width: 380px; /* Equivalent to 96px */
-        height: 400px; /* Equivalent to 96px */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: $p;
-        background-color: $primary;
-        opacity: 0;
-        transition: opacity 0.3s;
-        &:hover {
-          opacity: 0.8;
-        }
-        .silder-over-title {
-          color: $text;
-          font-size: 32px; /* Equivalent to 4xl */
-          opacity: 1;
-          transition: opacity 0.3s;
-        }
-        .silder-over-text {
-          opacity: 1;
-          transition: opacity 0.3s;
-        }
-        .silder-over-box {
-          height: 100px;
-          width: 350px;
-          border: 1px solid #f00;
-          margin-top: $m;
-          padding: $p;
-          color: #fff;
-          font-size: 16px;
-          display: flex;
-          flex-direction: column;
-          .box-title {
-            color: $a-primary;
-            font-weight: bold;
-            padding: 2px;
-            .sub-imbs {
-              background-color: $warning;
-              padding: 0.5px 16px;
-              color: $primary;
-            }
-          }
-        }
-        .btn-watch {
-          font-size: $size-s;
-          background-color: $a-primary;
-          color: $text;
-          padding: $p;
-          margin: $m;
-          border: none;
-          border-radius: $radius;
-          cursor: pointer;
-          &:hover {
-            background-color: $a-secondary;
-          }
-        }
       }
     }
   }
