@@ -1,15 +1,27 @@
 import React from "react";
 
+//Link
 interface LinkProps {
   url: string;
   title: string;
   icon?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
-export const Link: React.FC<LinkProps> = ({ url, title, icon, className }) => {
+export const Link: React.FC<LinkProps> = ({
+  url,
+  title,
+  icon,
+  className,
+  disabled,
+}) => {
   return (
-    <div className="relative mx-2 bg-transparent">
+    <div
+      className={`relative mx-2 ${
+        disabled ? "opacity-50 pointer-events-none" : ""
+      }`}
+    >
       {icon && (
         <span className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-transparent">
           {icon}
@@ -22,14 +34,29 @@ export const Link: React.FC<LinkProps> = ({ url, title, icon, className }) => {
   );
 };
 
+//Link Button
 interface LinkButtonProps {
   url: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
-export const LinkButton: React.FC<LinkButtonProps> = ({ url, icon }) => {
-  return <a href={url}>{icon}</a>;
+
+export const LinkButton: React.FC<LinkButtonProps> = ({
+  url,
+  icon,
+  disabled,
+}) => {
+  return (
+    <a
+      href={url}
+      className={`link ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+    >
+      {icon}
+    </a>
+  );
 };
 
+//Link navigation
 interface LinkProps {
   title: string;
   url: string;
@@ -51,28 +78,21 @@ export const LinkNavigation: React.FC<LinkNavigationProps> = ({ links }) => {
   );
 };
 
-////
-interface LinkProps {
+//Link disabled
+interface LinkDisabledProps {
   title: string;
+  icon?: React.ReactNode;
 }
 
-interface LinkListProps {
-  categories: { [key: string]: string[] };
-}
-
-export const LinkList: React.FC<LinkListProps> = ({ categories }) => {
+export const LinkDisabled: React.FC<LinkDisabledProps> = ({ title, icon }) => {
   return (
-    <div className="navbar-container-links">
-      {Object.entries(categories).map(([category, items]) => (
-        <div className="link-dropdown" key={category}>
-          <a className="category-title">{category}</a>
-          <div className="link-dropdown-content">
-            {items.map((title, index) => (
-              <a href=""> {title}</a>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="relative mx-2 text-aprimary font-bold">
+      {icon && (
+        <span className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-transparent  ">
+          {icon}
+        </span>
+      )}
+      <a className={`${icon ? "ml-6" : ""}`}>{title}</a>
     </div>
   );
 };

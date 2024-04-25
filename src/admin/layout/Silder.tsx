@@ -3,25 +3,29 @@ import { Link } from "../../components/Link";
 
 const Silder = () => {
   return (
-    <div className="pl-3 h-96 w-64 my-2 ">
-      <div className="my-2">
-        <Link url="/" title="Home" icon={<FaHome />} />
-      </div>
-      <div className="my-2">
-        <Link url="/" title="Confirm Admin" icon={<FaCheckCircle />} />
-      </div>
-      <div className="my-2">
-        <Link url="/" title="Movies" icon={<FaFilm />} />
-      </div>
-      <div className="my-2">
+    <div className="pl-3 h-96 w-64 my-2 shadow-md shadow-shadow mr-2">
+      <ul className="my-2">
+        <Link url="dashboard" title="Home" icon={<FaHome />} />
+      </ul>
+      <ul className="my-2">
+        <Link
+          url="admin-request"
+          title="Confirm Admin"
+          icon={<FaCheckCircle />}
+        />
+      </ul>
+      <ul className="my-2">
+        <Link url="movies" title="Movies" icon={<FaFilm />} />
+      </ul>
+      <ul className="my-2">
         <Link url="/" title="TV-Show" icon={<FaTv />} />
-      </div>
-      <div className="my-2">
+      </ul>
+      <ul className="my-2">
         <Link url="/" title="Users" icon={<FaUser />} />
-      </div>
-      <div className="my-2">
+      </ul>
+      <ul className="my-2">
         <Link url="/" title="Setting" icon={<FaUser />} />
-      </div>
+      </ul>
     </div>
   );
 };

@@ -7,6 +7,16 @@
 * {
   background-color: #000;
   color: #edf2f4;
+  scrollbar-width: none; /* Firefox */
+
+  /* Hide scrollbar for other browsers */
+  -ms-overflow-style: none; /* Internet Explorer */
+  scrollbar-width: none; /* Others */
+}
+
+/* Hide scrollbar for WebKit-based browsers (Chrome, Safari, etc.) */
+*::-webkit-scrollbar {
+  display: none;
 }
 
 /* Import Google Fonts */

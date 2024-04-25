@@ -7,7 +7,7 @@ import { FaAngleLeft, FaAngleRight, FaTv } from "react-icons/fa";
 import { SliderGroup } from "../components/slider/Slider";
 import { LabelCategory } from "../components/Label";
 import Poster from "../components/Poster";
-import MovieList from "./MovieList";
+import MovieList from "../components/MovieList";
 
 const HomeScreen: React.FC = () => {
   // Slider settings
@@ -34,7 +34,7 @@ const HomeScreen: React.FC = () => {
     sliderRef.current?.slickNext();
   };
   return (
-    <AppLayout>
+    <AppLayout page="home">
       <div className=" container-slider flex justify-center items-center my-2">
         <div className="btn-arrow ">
           <button onClick={handlePrevSlide}>
@@ -67,8 +67,13 @@ const HomeScreen: React.FC = () => {
           </button>
         </div>
       </div>
+      <LabelCategory htmlFor="popluar" textLabel="Popluar" seeMore={true} />
       <MovieList />
-      <MovieList />
+      <LabelCategory
+        htmlFor="maybeyoulike"
+        textLabel="Maybe You Like"
+        seeMore={true}
+      />
       <MovieList />
     </AppLayout>
   );

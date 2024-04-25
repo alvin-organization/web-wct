@@ -1,7 +1,7 @@
 import Box from "../components/Box";
 import AdminLayout from "../layout/AdminLayout";
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   return (
     <AdminLayout>
       <div className="my-2 w-full px-3">
@@ -34,4 +34,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

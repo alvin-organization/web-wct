@@ -4,12 +4,13 @@ import Footer from "./Footer";
 
 interface AppLayoutProps {
   children: ReactNode;
+  page?: string;
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+const AppLayout: React.FC<AppLayoutProps> = ({ children, page }) => {
   return (
     <div className="app-layout">
-      <Header />
+      <Header page={page} />  
       <main>{children}</main>
       <Footer />
     </div>

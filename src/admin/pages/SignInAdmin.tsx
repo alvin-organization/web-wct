@@ -52,7 +52,7 @@ const SignInAdmin = () => {
       navigate("/");
     } catch (error) {
       setErr(true);
-      setMessage("An error occurred. Please try again."); // Handle error
+      setMessage("An error occurred. Please try again.");
     }
   };
 

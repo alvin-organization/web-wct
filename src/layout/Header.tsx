@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Logo } from "../components/Logo"; // Adjust import for Logo
-import NavbarLink from "../data/navbarLink.json"; // Adjust import for JSON data
 import Input from "../components/Input";
-import data from "../data/_test.json";
 import {
   FaCalendarAlt,
   FaCompass,
@@ -13,17 +11,22 @@ import {
   FaTv,
   FaUserAlt,
 } from "react-icons/fa";
-import { Link } from "../components/Link";
+import { Link, LinkDisabled } from "../components/Link";
 
+//Header Logo only
 export const HeaderLogo = () => {
   return (
-    <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-center mb-2 ">
+    <div className="w-full h-18 border-b-2 border-aprimary flex items-center justify-center ">
       <Logo />
     </div>
   );
 };
 
-export const Header = () => {
+
+
+
+//Normal Header
+export const Header = ({ page }: { page?: string }) => {
   const [formData, setFormData] = useState({
     search: "",
   });
@@ -38,20 +41,68 @@ export const Header = () => {
     <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-between pr-3 mb-4  ">
       <Logo />
       <div className="flex items-center justify-between ">
-        <div className="group">
+        {/* Home */}
+        {page === "home" ? (
+          <LinkDisabled
+            title="Home"
+            icon={<FaHome style={{ fill: "red" }} />}
+          />
+        ) : (
           <Link url="/" title="Home" icon={<FaHome />} />
-          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-            <Link url="/" title="Home" />
-            <Link url="/" title="Home" />
-            <Link url="/" title="Home" />
-            <Link url="/" title="Home" />
-            <Link url="/" title="Home" />
+        )}
+
+        {/* Movies */}
+        {page === "movies" ? (
+          <div className="group">
+            <LinkDisabled
+              title="Movies"
+              icon={<FaFilm style={{ fill: "red" }} />}
+            />
+            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
+              <Link url="/movies/Action" title="Action" />
+              <Link url="/movies/Comady" title="Comady" />
+              <Link url="/movies/Horors" title="Horors" />
+            </div>
           </div>
-        </div>
-        <Link url="/movies" title="Movies" icon={<FaFilm />} />
-        <Link url="/tv-show" title="TV-Shows" icon={<FaTv />} />
-        <Link url="/years" title="Years" icon={<FaCalendarAlt />} />
-        <Link url="/countries" title="Countries" icon={<FaGlobeAmericas />} />
+        ) : (
+          <div className="group">
+            <Link url="/movies" title="Movies" icon={<FaFilm />} />
+            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
+              <Link url="/movies/Action" title="Action" />
+              <Link url="/movies/Comady" title="Comady" />
+              <Link url="/movies/Horors" title="Horors" />
+            </div>
+          </div>
+        )}
+
+        {/* TV-Show */}
+        {page === "tv-show" ? (
+          <LinkDisabled
+            title="TV-Shows"
+            icon={<FaTv style={{ fill: "red" }} />}
+          />
+        ) : (
+          <Link url="/tv-show" title="TV-Shows" icon={<FaTv />} />
+        )}
+
+        {/* Years */}
+        {page === "years" ? (
+          <LinkDisabled
+            title="Years"
+            icon={<FaCalendarAlt style={{ fill: "red" }} />}
+          />
+        ) : (
+          <Link url="/years" title="Years" icon={<FaCalendarAlt />} />
+        )}
+
+        {page === "countries" ? (
+          <LinkDisabled
+            title="Countries"
+            icon={<FaGlobeAmericas style={{ fill: "red" }} />}
+          />
+        ) : (
+          <Link url="/countries" title="Countries" icon={<FaGlobeAmericas />} />
+        )}
       </div>
       <div className="flex items-center">
         <form>
@@ -64,7 +115,14 @@ export const Header = () => {
           />
         </form>
         <div className="m-2">
-          <Link url="/" title="Explore" icon={<FaCompass />} />
+          {page === "explore" ? (
+            <LinkDisabled
+              title="Explore"
+              icon={<FaCompass style={{ fill: "red" }} />}
+            />
+          ) : (
+            <Link url="/explore" title="Explore" icon={<FaCompass />} />
+          )}
         </div>
       </div>
       <div className="flex items-center">

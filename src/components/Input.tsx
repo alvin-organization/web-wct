@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 
 interface InputProps {
   type: string;
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
   placeholder?: string;
   icon?: React.ReactNode; // Optional icon prop
