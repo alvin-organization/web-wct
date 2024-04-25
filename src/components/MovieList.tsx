@@ -12,6 +12,7 @@ const MovieList = () => {
             imageUrl={movie.imageUrl}
           />
         ))}
+        <span>Data not found</span>
       </div>
     </div>
   );
