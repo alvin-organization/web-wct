@@ -6,7 +6,6 @@ import SignIn from "./pages/SignIn";
 import HomeScreen from "./pages/HomeScreen";
 import ResetPassword from "./pages/reset_password/ResetPassword";
 import NewPassword from "./pages/reset_password/NewPassword";
-import MoviesGenre from "./pages/movies/MoviesGenre";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpAdmin from "./admin/pages/SignUpAdmin";
 import SignInAdmin from "./admin/pages/SignInAdmin";
@@ -16,6 +15,12 @@ import AdminMovies from "./admin/pages/AdminMovies";
 import UploadMovies from "./admin/pages/adminMovies/UploadMovies";
 import MoviesList from "./pages/movies/MoviesList";
 import Explore from "./pages/Explore";
+import MovieDetail from "./pages/movies/inside_movie/MovieDetail";
+import MoviePlay from "./pages/movies/inside_movie/MoviePlay";
+import Profile from "./user/Profile";
+import Setting from "./user/Setting";
+import Subscription from "./user/subscription/Subscription";
+import PaymentForm from "./user/subscription/Payment";
 
 const App: React.FC = () => {
   return (
@@ -30,9 +35,18 @@ const App: React.FC = () => {
           path="/reset-password/new-password/:token"
           element={<NewPassword />}
         />
-        <Route path="/movies" element={<MoviesList />} />
-        <Route path="/movies/:genre" element={<MoviesGenre />} />
+
         <Route path="/explore" element={<Explore />} />
+        {/* Movie */}
+        <Route path="/:genre" element={<MoviesList />} />
+        <Route path="/movies/:movieName/detail" element={<MovieDetail />} />
+        <Route path="/movies/:movieName/play" element={<MoviePlay />} />
+
+        {/* User */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/setting" element={<Setting />} />
+        <Route path="/subscription" element={<Subscription />} />
+        <Route path="/subscription/:plan/payment" element={<PaymentForm />} />
 
         {/* Routes for Admin */}
         <Route path="/admins/signup" element={<SignUpAdmin />} />

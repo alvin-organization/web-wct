@@ -1,27 +1,48 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Input from "../components/Input";
 import { HeaderLogo } from "../layout/Header";
 import { Label, LabelInput } from "../components/Label";
 import { ButtonAction, ButtonLink } from "../components/Button";
 import { Link, LinkButton } from "../components/Link";
 import Footer from "../layout/Footer";
-import { FaAngleLeft, FaKey, FaSignInAlt, FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import {
+  FaAngleLeft,
+  FaArrowLeft,
+  FaEye,
+  FaEyeSlash,
+  FaKey,
+  FaSignInAlt,
+  FaUser,
+} from "react-icons/fa";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../app/user/userSlice";
 
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
 interface SignInForm {
   username_email: string;
   password: string;
 }
 
 const SignIn = () => {
+  const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector(
+    (state: RootState) => state.user
+  );
   const [formData, setFormData] = useState({
     username_email: "",
     password: "",
   });
-
-  const [message, setMessage] = useState<any>({});
-  const [err, setErr] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (inputType: keyof SignInForm, newValue: string) => {
     setFormData({
@@ -33,7 +54,8 @@ const SignIn = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/users/signin", {
+      dispatch(signInStart());
+      const response = await fetch("http://127.0.0.1:8000/api/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,25 +64,30 @@ const SignIn = () => {
       });
 
       const data = await response.json();
-      if (data.success === false) {
-        setErr(true);
-        setMessage(data.message);
+
+      if (!response.ok) {
+        dispatch(signInFailure(data.message));
         return;
       }
 
-      setErr(false);
+      dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {
-      setErr(true);
-      setMessage("An error occurred. Please try again."); // Handle error
+      dispatch(signInFailure(error));
     }
   };
+
+  useEffect(() => {
+    dispatch(signInFailure(null));
+  }, []);
 
   return (
     <>
       <HeaderLogo />
       <div className="flex flex-col justify-center items-center my-4">
-        <LinkButton url="/" icon={<FaAngleLeft className="button-link" />} />
+        <a href="/" className="absolute top-28 left-10">
+          <FaArrowLeft />
+        </a>
         <Label htmlFor="" textLabel="Sign In" />
         <form className="flex flex-col w-96 my-2" onSubmit={handleSubmit}>
           <LabelInput htmlFor="username_email" textLabel="Username or Email" />
@@ -73,18 +100,28 @@ const SignIn = () => {
           />
           <LabelInput htmlFor="password" textLabel="Password" />
           <Input
-            type="Password"
+            type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={(value) => handleChange("password", value)}
             placeholder="Enter Password"
             icon={<FaKey />}
+            secound_icon={
+              showPassword ? (
+                <FaEyeSlash onClick={toggleShowPassword} />
+              ) : (
+                <FaEye onClick={toggleShowPassword} />
+              )
+            }
           />
           <ButtonAction
-            text="Sign In"
+            disabled={loading}
+            text={loading ? "Loading..." : "Sign In"}
             icon={<FaSignInAlt className="bg-transparent" />}
           />
-        </form>
-        {err ? <span className="text-danger">{message}</span> : ""}
+        </form>{" "}
+        {errorMessage ? (
+          <span className="text-danger">{errorMessage}</span>
+        ) : null}
         <span className="w-96">
           <span className="flex items-center">
             <p className="my-2"> Don't have account? </p>

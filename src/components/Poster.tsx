@@ -1,7 +1,6 @@
 // CoverPosterMovie.tsx
 import React from "react";
 import { FaPlayCircle } from "react-icons/fa";
-import { ButtonAction } from "./Button";
 import { LinkButton } from "./Link";
 
 interface CoverPosterMovieProps {
@@ -11,7 +10,10 @@ interface CoverPosterMovieProps {
 
 const Poster: React.FC<CoverPosterMovieProps> = ({ imageUrl, movieName }) => {
   return (
-    <div className="relative inline-block group ">
+    <a
+      href={`/movies/${movieName}/detail`}
+      className="relative inline-block group "
+    >
       <img
         src={imageUrl}
         alt="Movie Poster"
@@ -19,14 +21,17 @@ const Poster: React.FC<CoverPosterMovieProps> = ({ imageUrl, movieName }) => {
       />
       <a className=" w-40 h-60 absolute top-0 opacity-0 flex flex-col justify-center items-center cursor-pointer transition-opacity group-hover:opacity-80">
         <LinkButton
-          url="/"
+          url={`/movies/${movieName}/detail`}
           icon={
             <FaPlayCircle
-              style={{
-                backgroundColor: "transparent",
-                fill: "red",
-                fontSize: "32px",
-              }}
+              fill="red"
+              className="bg-transparent"
+              size="32"
+              // style={{
+              //   backgroundColor: "transparent",
+              //   fill: "red",
+              //   fontSize: "32px",
+              // }}
             />
           }
         />
@@ -34,7 +39,7 @@ const Poster: React.FC<CoverPosterMovieProps> = ({ imageUrl, movieName }) => {
           {movieName}
         </h2>
       </a>
-    </div>
+    </a>
   );
 };
 

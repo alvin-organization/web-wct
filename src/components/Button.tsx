@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
 
 interface ButtonLinkProps {
-  href: string;
+  href?: string;
   icon?: ReactNode;
-  text: string;
+  text?: string;
 }
 
 export const ButtonLink: React.FC<ButtonLinkProps> = ({ href, icon, text }) => {
@@ -25,13 +25,15 @@ export const ButtonLink: React.FC<ButtonLinkProps> = ({ href, icon, text }) => {
 
 interface ButtonActionProps {
   onClick?: () => void;
+  onSubmit?: () => void;
   icon?: ReactNode;
-  text: string;
+  text?: string;
   disabled?: boolean; // New prop for disabled state
 }
 
 export const ButtonAction: React.FC<ButtonActionProps> = ({
   onClick,
+  onSubmit,
   icon,
   text,
   disabled = false, // Default value for disabled prop
@@ -45,6 +47,7 @@ export const ButtonAction: React.FC<ButtonActionProps> = ({
       )}
       <button
         onClick={onClick}
+        onSubmit={onSubmit}
         disabled={disabled}
         className={`flex items-center bg-aprimary border hover:border py-1 px-2  rounded hover:bg-primary focus:outline-none focus:shadow-outline ${
           icon ? "pl-10" : ""

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import Input from "../components/Input";
 import { HeaderLogo } from "../layout/Header";
 import { Label, LabelInput } from "../components/Label";
@@ -7,19 +7,30 @@ import { Link, LinkButton } from "../components/Link";
 import Footer from "../layout/Footer";
 import {
   FaAngleLeft,
+  FaArrowLeft,
   FaCheck,
   FaEnvelope,
+  FaEye,
+  FaEyeSlash,
   FaKey,
   FaUser,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signUpStart,
+  signUpFailure,
+  signUpSuccess,
+} from "../app/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../app/store";
 
 interface SignUpForm {
   username: string;
   email: string;
   password: string;
   cPassword: string;
-  role_id: number;
+  profile: string;
+  role: string;
 }
 
 const SignUp = () => {
@@ -28,38 +39,56 @@ const SignUp = () => {
     email: "",
     password: "",
     cPassword: "",
-    role_id: 2,
+    profile:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png",
+    role: "User",
   });
 
-  const [message, setMessage] = useState<any>({});
+  const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector(
+    (state: RootState) => state.user
+  );
+
+  const [messageLenght, setMessageLength] = useState<any>({});
+  const [messageMatch, setMessageMatch] = useState<any>({});
   const [errLength, setErrLength] = useState<boolean>(false);
   const [errMatch, setErrMatch] = useState<boolean>(false);
-  const [err, setErr] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCPassword, setShowCPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowCPassword = () => {
+    setShowCPassword(!showCPassword);
+  };
+
+  useEffect(() => {
+    dispatch(signUpFailure(null));
+  }, []);
+
+  //OnChange
   const handleChange = (inputType: keyof SignUpForm, newValue: string) => {
     if (inputType === "password") {
       if (newValue.length < 6 && newValue.length > 0) {
         setErrLength(true);
-        setErrMatch(false);
-        setMessage("Password must be at least 6 characters long.");
+        setMessageLength("Password must be at least 6 characters long.");
       } else {
         setErrLength(false);
-        setErrMatch(false);
-        setMessage("");
+        setMessageLength("");
       }
     }
 
     if (inputType === "cPassword") {
       if (newValue !== formData.password) {
-        setErrLength(false);
         setErrMatch(true);
-        setMessage("Passwords do not match.");
+        setMessageMatch("Passwords do not match.");
       } else {
-        setErrLength(false);
         setErrMatch(false);
-        setMessage("");
+        setMessageMatch("");
       }
     }
 
@@ -68,16 +97,19 @@ const SignUp = () => {
       [inputType]: newValue,
     });
   };
-  console.log(formData);
+
+  //OnSubmit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+
     if (formData.password !== formData.cPassword) {
-      setMessage("Passwords do not match.");
+      dispatch(signUpFailure("Passwords do not match."));
       return;
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/users/signup", {
+      dispatch(signUpStart());
+      const response = await fetch("http://127.0.0.1:8000/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,28 +118,29 @@ const SignUp = () => {
       });
 
       const data = await response.json();
-      if (data.success === false) {
-        setErr(true);
-        setMessage(data.message);
+
+      if (!response.ok) {
+        dispatch(signUpFailure(data.errors));
         return;
       }
-
-      setErr(false);
+      dispatch(signUpSuccess(data));
       navigate("/");
     } catch (error) {
-      setErr(true);
-      setMessage("An error occurred. Please try again."); // Handle error
+      dispatch(signUpFailure(error));
     }
   };
-
   return (
     <>
       <HeaderLogo />
       <div className="flex flex-col justify-center items-center my-4">
-        <LinkButton url="/" icon={<FaAngleLeft className="button-link" />} />
+        <a href="/" className="absolute top-28 left-10">
+          <FaArrowLeft />
+        </a>
         <Label htmlFor="" textLabel="Sign Up" />
         <form className="flex flex-col w-96 my-2" onSubmit={handleSubmit}>
-          <LabelInput htmlFor="username" textLabel="Username" />
+          <span className="flex items-center text-aprimary">
+            <LabelInput htmlFor="username" textLabel="Username" />*
+          </span>
           <Input
             id="username"
             type="text"
@@ -116,9 +149,11 @@ const SignUp = () => {
             placeholder="Enter username"
             icon={<FaUser />}
             pattern="[a-zA-Z0-9]*"
+            required={true}
           />
-
-          <LabelInput htmlFor="email" textLabel="Email" />
+          <span className="flex items-center text-aprimary">
+            <LabelInput htmlFor="email" textLabel="Email" />*
+          </span>
           <Input
             id="email"
             type="email"
@@ -126,35 +161,69 @@ const SignUp = () => {
             onChange={(value) => handleChange("email", value)}
             placeholder="Enter email"
             icon={<FaEnvelope />}
+            required={true}
           />
-          <LabelInput htmlFor="password" textLabel="Password" />
-
+          <span className="flex items-center text-aprimary">
+            <LabelInput htmlFor="password" textLabel="Password" />*
+          </span>
           <Input
             id="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={(value) => handleChange("password", value)}
             placeholder="Enter Password"
             icon={<FaKey />}
+            secound_icon={
+              showPassword ? (
+                <FaEyeSlash onClick={toggleShowPassword} />
+              ) : (
+                <FaEye onClick={toggleShowPassword} />
+              )
+            }
+            required={true}
           />
-          {errLength ? <span className="text-danger">{message}</span> : ""}
-          <LabelInput htmlFor="cPassword" textLabel="Confirm Password" />
+          {errLength ? (
+            <span className="text-danger">{messageLenght}</span>
+          ) : (
+            ""
+          )}
+          <span className="flex items-center text-aprimary">
+            <LabelInput htmlFor="cPassword" textLabel="Confirm Password" />*
+          </span>
           <Input
             id="cPassword"
-            type="password"
+            type={showCPassword ? "text" : "password"}
             value={formData.cPassword}
             onChange={(value) => handleChange("cPassword", value)}
             placeholder="Enter Confirm Password"
             icon={<FaCheck />}
             pattern="[^\s]*"
+            required={true}
+            secound_icon={
+              showCPassword ? (
+                <FaEyeSlash onClick={toggleShowCPassword} />
+              ) : (
+                <FaEye onClick={toggleShowCPassword} />
+              )
+            }
           />
-          {errMatch ? <span className="text-danger">{message}</span> : ""}
+          {errMatch ? <span className="text-danger">{messageMatch}</span> : ""}
           <ButtonAction
-            text="Sign Up"
+            disabled={loading}
+            text={loading ? "Loading..." : "Sign Up"}
             icon={<FaUser className="bg-transparent" />}
           />
         </form>
-        {err ? <span className="text-danger">{message}</span> : ""}
+        {errorMessage?.username && errorMessage?.email ? (
+          <span className="text-danger">
+            The username and email have already been taken.
+          </span>
+        ) : errorMessage?.username ? (
+          <span className="text-danger">{errorMessage.username}</span>
+        ) : errorMessage?.email ? (
+          <span className="text-danger">{errorMessage.email}</span>
+        ) : null}
+
         <span className="w-96">
           <span className="flex items-center">
             <p className="my-2">Have an account?</p>

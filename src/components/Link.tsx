@@ -36,20 +36,24 @@ export const Link: React.FC<LinkProps> = ({
 
 //Link Button
 interface LinkButtonProps {
-  url: string;
+  url?: string;
   icon?: React.ReactNode;
   disabled?: boolean;
+  className?: string;
 }
 
 export const LinkButton: React.FC<LinkButtonProps> = ({
   url,
   icon,
   disabled,
+  className,
 }) => {
   return (
     <a
       href={url}
-      className={`link ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+      className={` ${className} ${
+        disabled ? "opacity-50 pointer-events-none" : ""
+      }`}
     >
       {icon}
     </a>

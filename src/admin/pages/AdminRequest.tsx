@@ -98,7 +98,7 @@ const AdminRequest: React.FC = () => {
               </div>
             </div>
           ))}
-        <p className="text-aprimary">{message}</p>
+        {/* <p className="text-aprimary">{message}</p> */}
       </div>
     </AdminLayout>
   );

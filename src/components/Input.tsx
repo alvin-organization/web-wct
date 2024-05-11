@@ -6,8 +6,11 @@ interface InputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   icon?: React.ReactNode; // Optional icon prop
+  secound_icon?: React.ReactNode;
   pattern?: string;
   id?: string; // Pattern for input validation
+  required?: boolean;
+  onClick?: () => void;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -18,6 +21,9 @@ const Input: React.FC<InputProps> = ({
   icon,
   pattern,
   id,
+  required,
+  secound_icon,
+  onClick,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = event.target.value;
@@ -64,7 +70,16 @@ const Input: React.FC<InputProps> = ({
           icon ? "pl-10 fill-aprimary" : ""
         }`}
         pattern={pattern} // Set pattern attribute for input validation
+        required={required}
       />
+      {secound_icon && (
+        <a
+          onClick={onClick} // Assign onclick handler
+          className="absolute inset-y-0 right-0 flex items-center cursor-pointer pr-4 m-0 bg-transparent"
+        >
+          {secound_icon}
+        </a>
+      )}
     </div>
   );
 };

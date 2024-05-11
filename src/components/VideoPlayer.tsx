@@ -11,7 +11,7 @@ import {
   FaForward,
   FaBackward,
 } from "react-icons/fa";
-// import Video from "../assets/Video.mp4";
+import Video from "../assets/Video.mp4";
 import Thumbnail from "../assets/Cover.png";
 
 const VideoPlayer: React.FC = () => {
@@ -170,46 +170,54 @@ const VideoPlayer: React.FC = () => {
   };
 
   return (
-    <div className="relative ">
+    <div className="relative">
       <video
         ref={videoRef}
-        className="w-full"
+        className="w-full bg-transparent"
         onClick={togglePlay}
         poster={Thumbnail}
       >
-        {/* <source src={Video} type="video/mp4" /> */}
+        <source src={Video} type="video/mp4" />
       </video>
       {!isPlaying && (
         <button
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red text-4xl"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl"
           onClick={togglePlay}
         >
-          <FaPlay />
+          <FaPlay className="bg-transparent" />
         </button>
       )}
-      <div className="absolute bottom-4 left-4 flex items-center justify-center mb-2 ">
+      <div className="absolute bottom-4 left-4 flex items-center justify-center mb-2 bg-transparent">
         <button onClick={togglePlay} className="mr-2">
-          {isPlaying ? <FaPause /> : <FaPlay />}
+          {isPlaying ? (
+            <FaPause className="bg-transparent" />
+          ) : (
+            <FaPlay className="bg-transparent" />
+          )}
         </button>
         <button
-          className="text-xl mx-2 flex items-center justify-center"
+          className="text-xl mx-2 flex items-center justify-center "
           onClick={handleBackward}
         >
-          <p className="m-1">10s</p>
-          <FaBackward />
+          <p className="m-1 bg-transparent">10s</p>
+          <FaBackward className="bg-transparent" />
         </button>
         <button
           className="text-xl mx-2 flex items-center justify-center"
           onClick={handleForward}
         >
-          <FaForward />
-          <p className="m-1">10s</p>
+          <FaForward className="bg-transparent" />
+          <p className="m-1 bg-transparent">10s</p>
         </button>
-        <div className="group flex">
+        <div className="group flex bg-transparent">
           <button className="text-2xl mx-2" onClick={toggleMute}>
-            {muted ? <FaVolumeDown /> : <FaVolumeUp />}
+            {muted ? (
+              <FaVolumeDown className="bg-transparent" />
+            ) : (
+              <FaVolumeUp className="bg-transparent" />
+            )}
           </button>
-          <div className={`group-hover:flex hidden rounded w-40`}>
+          <div className="group-hover:flex hidden rounded w-40 bg-transparent ">
             <input
               type="range"
               min="0"
@@ -217,21 +225,21 @@ const VideoPlayer: React.FC = () => {
               step="0.01"
               value={volume}
               onChange={handleVolumeChange}
-              className="w-full"
+              className="w-full bg-transparent"
             />
-            <p className="ml-2">{Math.round(volume * 100)}%</p>
+            <p className="ml-2 bg-transparent">{Math.round(volume * 100)}%</p>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-4 right-4 flex items-center justify-center mb-4">
+      <div className="absolute bottom-4 right-4 flex items-center justify-center mb-4 bg-transparent">
         <button className="text-2xl mx-2" onClick={toggleSettings}>
-          <FaCog />
+          <FaCog className="bg-transparent" />
         </button>
         <button className="text-2xl ml-2" onClick={handleFullScreen}>
-          <FaExpand />
+          <FaExpand className="bg-transparent" />
         </button>
         {showSettings && (
-          <div className="absolute bottom-full right-0 bg-white text-black rounded shadow-md p-2 w-64">
+          <div className="absolute bottom-full right-0 text-black rounded shadow-md p-2 w-64 space-y-3">
             <div className="flex my-1 justify-between">
               <p>Video Resolution:</p>
               <select

@@ -25,7 +25,7 @@ export const SliderGroup: FC<SliderGroupProps> = ({
 }) => {
   return (
     <div className="silder-group group">
-      <a href="moviewatch">
+      <a href="movies/acb/detail">
         <img className="silder-image" src={imageUrl} alt={title} />
       </a>
       <div className=" group-hover:opacity-80 absolute border-r-4 border-aprimary top-0 right-0 w-96 h-96 flex flex-col items-center px-4 py-2 bg-primary opacity-0 transition-opacity duration-300 hover:opacity-80">
@@ -59,7 +59,7 @@ export const SliderGroup: FC<SliderGroupProps> = ({
           </span>
         </div>
         <ButtonLink
-          href="#"
+          href="movies/acb/detail"
           text="Watching"
           icon={
             <FaTv style={{ fill: "white", backgroundColor: "transparent" }} />
