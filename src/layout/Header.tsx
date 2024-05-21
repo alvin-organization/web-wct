@@ -27,9 +27,10 @@ export const HeaderLogo = () => {
 //Normal Header
 export const Header = ({ page }: { page?: string }) => {
   const user = useSelector(
-    (state: RootState) => state?.user?.currentUser?.user
+    (state: RootState) => state?.user?.currentUser?.data
   );
   const [message, setMessage] = useState<string>();
+  const [genres, setGenres] = useState<any>([]);
   const [formData, setFormData] = useState({
     search: "",
   });
@@ -52,16 +53,14 @@ export const Header = ({ page }: { page?: string }) => {
       });
 
       const data = await response.json();
-      console.log(data);
+
       if (!response.ok) {
         setMessage(data.message);
         return;
       }
-
-      // Handle the successful response (e.g., dispatch an action)
+      setGenres(data.data);
     } catch (error) {
-      // Handle errors (e.g., dispatch an action to indicate sign-in failure)
-      // dispatch(signInFailure(error));
+      setMessage("");
     }
   };
 
@@ -73,118 +72,112 @@ export const Header = ({ page }: { page?: string }) => {
     <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-between pr-3 mb-4  ">
       <Logo />
       <div className="flex items-center justify-between ">
-        {/* Home */}
-        {page === "home" ? (
-          <LinkDisabled
-            title="Home"
-            icon={<FaHome style={{ fill: "red" }} />}
-          />
-        ) : (
-          <Link url="/" title="Home" icon={<FaHome />} />
-        )}
+        <a
+          href="/"
+          className={`relative mx-2 ${
+            page === "home" ? "pointer-events-none" : ""
+          }`}
+        >
+          <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
+            <FaHome fill={page === "home" ? "red" : "white"} />
+          </span>
+          <p
+            className={` ml-6 ${
+              page === "home" ? "text-aprimary font-bold" : "link"
+            } display:block hidden xl:flex`}
+          >
+            Home
+          </p>
+        </a>
 
-        {/* Movies */}
-        {page === "Movies" ? (
-          <div className="group">
-            <LinkDisabled
-              title="Movies"
-              icon={<FaFilm style={{ fill: "red" }} />}
-            />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/Action" title="Action" />
-              <Link url="/Comady" title="Comady" />
-              <Link url="/Horors" title="Horors" />
-            </div>
+        <div className="group">
+          <a
+            href="Movies"
+            className={`relative mx-2 ${
+              page === "Movies" ? "pointer-events-none" : ""
+            }`}
+          >
+            <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
+              <FaFilm fill={page === "Movies" ? "red" : "white"} />
+            </span>
+            <p
+              className={`ml-8 ${
+                page === "Movies" ? "text-aprimary font-bold" : "link"
+              } display:block hidden xl:flex`}
+            >
+              Movies
+            </p>
+          </a>
+          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {genres.map((genre: any) => (
+              <div key={genre.id}>
+                <a href="" className="link">
+                  {genre.genre_name}
+                </a>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div className="group">
-            <Link url="/Movies" title="Movies" icon={<FaFilm />} />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/Action" title="Action" />
-              <Link url="/Comady" title="Comady" />
-              <Link url="/Horors" title="Horors" />
-            </div>
+        </div>
+        <div className="group">
+          <a
+            href="Countries"
+            className={`relative mx-2 ${
+              page === "Countries" ? "pointer-events-none" : ""
+            }`}
+          >
+            <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
+              <FaGlobeAmericas fill={page === "Countries" ? "red" : "white"} />
+            </span>
+            <p
+              className={`ml-8 ${
+                page === "Countries" ? "text-aprimary font-bold" : "link"
+              } display:block hidden xl:flex`}
+            >
+              Countries
+            </p>
+          </a>
+          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {genres.map((genre: any) => (
+              <div key={genre.id}>
+                <a href="" className="link">
+                  {genre.genre_name}
+                </a>
+              </div>
+            ))}
           </div>
-        )}
-
-        {/* TV-Show */}
-        {page === "TV-Shows" ? (
-          <div className="group">
-            <LinkDisabled
-              title="TV-Shows"
-              icon={<FaTv style={{ fill: "red" }} />}
-            />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/C-Drama" title="C-Drama" />
-              <Link url="/K-Drama" title="K-Drama" />
-              <Link url="/Khmer Drama" title="Khmer Drama" />
-            </div>
+        </div>
+        <div className="group">
+          <a
+            href="Years"
+            className={`relative mx-2 ${
+              page === "Years" ? "pointer-events-none" : ""
+            }`}
+          >
+            <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
+              <FaCalendarAlt fill={page === "Years" ? "red" : "white"} />
+            </span>
+            <p
+              className={`ml-8 ${
+                page === "Years" ? "text-aprimary font-bold" : "link"
+              } display:block hidden xl:flex`}
+            >
+              Years
+            </p>
+          </a>
+          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {genres.map((genre: any) => (
+              <div key={genre.id}>
+                <a href="" className="link">
+                  {genre.genre_name}
+                </a>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div className="group">
-            <Link url="/TV-Shows " title="TV-Shows" icon={<FaTv />} />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/C-Drama" title="C-Drama" />
-              <Link url="/K-Drama" title="K-Drama" />
-              <Link url="/Khmer Drama" title="Khmer Drama" />
-            </div>
-          </div>
-        )}
-
-        {/* Years */}
-        {page === "Years" ? (
-          <div className="group">
-            <LinkDisabled
-              title="Years"
-              icon={<FaCalendarAlt style={{ fill: "red" }} />}
-            />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/2020" title="2020" />
-              <Link url="/2021" title="2021" />
-              <Link url="/2022" title="2022" />
-            </div>
-          </div>
-        ) : (
-          <div className="group">
-            <Link url="/Years" title="Years" icon={<FaCalendarAlt />} />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/2020" title="2020" />
-              <Link url="/2021" title="2021" />
-              <Link url="/2022" title="2022" />
-            </div>
-          </div>
-        )}
-
-        {page === "Countries" ? (
-          <div className="group">
-            <LinkDisabled
-              title="Countries"
-              icon={<FaGlobeAmericas style={{ fill: "red" }} />}
-            />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/USA" title="USA" />
-              <Link url="/UK" title="UK" />
-              <Link url="/Canada" title="Canada" />
-            </div>
-          </div>
-        ) : (
-          <div className="group">
-            <Link
-              url="/Countries"
-              title="Countries"
-              icon={<FaGlobeAmericas />}
-            />
-            <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-2 hidden group-hover:grid">
-              <Link url="/USA" title="USA" />
-              <Link url="/UK" title="UK" />
-              <Link url="/Canada" title="Canada" />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
       <div className="flex items-center">
         <form>
-          <Input
+          <Input  
             type="text"
             value={formData.search}
             onChange={(value) => handleChange("search", value)}

@@ -15,15 +15,29 @@ import {
 } from "react-icons/fa";
 import Input from "../components/Input";
 import { Link, LinkButton } from "../components/Link";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 interface userInformation {
   username: string;
   email: string;
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 const Setting = () => {
+  const user = useSelector(
+    (state: RootState) => state?.user?.currentUser?.user
+  );
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
+    username: user?.username,
+    email: user?.email,
+  });
+
+  const [formDataPassword, setFormDataPassword] = useState({
+    password: "",
+    newPassword: "",
+    cNewPassword: "",
   });
 
   const [message, setMessage] = useState<any>({});
@@ -35,10 +49,17 @@ const Setting = () => {
       ...formData,
       [inputType]: newValue,
     });
+
+    setFormDataPassword({
+      ...formDataPassword,
+      [inputType]: newValue,
+    });
   };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
   };
+
+  console.log(setFormData);
 
   return (
     <AppLayout>
@@ -50,13 +71,10 @@ const Setting = () => {
           <Label textLabel="Profile" />
         </span>
         <div className="my-4">
-          <img
-            className="w-32 h-32 rounded-full border"
-            src="https://static.vecteezy.com/system/resources/previews/011/675/365/original/man-avatar-image-for-profile-png.png"
-          />
+          <img className="w-32 h-32 rounded-full border" src={user.profile} />
         </div>
         <Label htmlFor="" textLabel="Edit Your Informatuon" />
-        <p className="text-aprimary font-bold">Username or Email</p>
+        <p className="text-aprimary font-bold">Username and Email</p>
         <form className="flex flex-col w-96 my-2" onSubmit={handleSubmit}>
           <LabelInput htmlFor="username" textLabel="Username " />
           <Input
@@ -81,27 +99,33 @@ const Setting = () => {
         </form>
         <p className="text-aprimary font-bold mt-4">Password</p>
         <form className="flex flex-col w-96 my-2" onSubmit={handleSubmit}>
-          <LabelInput htmlFor="username" textLabel="Current Password " />
+          <LabelInput
+            htmlFor="current_password"
+            textLabel="Current Password "
+          />
           <Input
-            type="text"
-            value={formData.username}
-            onChange={(value) => handleChange("username", value)}
+            type="password"
+            value={formDataPassword.password}
+            onChange={(value) => handleChange("password", value)}
             placeholder="Enter Current Password"
             icon={<FaKey />}
           />
-          <LabelInput htmlFor="email" textLabel="New Password" />
+          <LabelInput htmlFor="new_password" textLabel="New Password" />
           <Input
-            type="email"
-            value={formData.email}
-            onChange={(value) => handleChange("email", value)}
+            type="password"
+            value={formDataPassword.newPassword}
+            onChange={(value) => handleChange("newPassword", value)}
             placeholder="Enter New Password"
             icon={<FaKey />}
           />
-          <LabelInput htmlFor="username" textLabel="Comfirm New Password " />
+          <LabelInput
+            htmlFor="confirm_password"
+            textLabel="Comfirm New Password"
+          />
           <Input
-            type="text"
-            value={formData.username}
-            onChange={(value) => handleChange("username", value)}
+            type="password"
+            value={formDataPassword.cNewPassword}
+            onChange={(value) => handleChange("confirmNewPassword", value)}
             placeholder="Enter New Password Agian"
             icon={<FaKey />}
           />

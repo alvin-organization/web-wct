@@ -40,6 +40,7 @@ interface LinkButtonProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   className?: string;
+  text?: string;
 }
 
 export const LinkButton: React.FC<LinkButtonProps> = ({
@@ -47,6 +48,7 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
   icon,
   disabled,
   className,
+  text,
 }) => {
   return (
     <a
@@ -56,6 +58,13 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
       }`}
     >
       {icon}
+      {text ? (
+        <h2 className=" text-xl text-aprimary font-bold bg-transparent">
+          {text}
+        </h2>
+      ) : (
+        ""
+      )}
     </a>
   );
 };
@@ -93,7 +102,7 @@ export const LinkDisabled: React.FC<LinkDisabledProps> = ({ title, icon }) => {
     <div className="relative mx-2 text-aprimary font-bold">
       {icon && (
         <span className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-transparent  ">
-          {icon}
+          {icon}y
         </span>
       )}
       <a className={`${icon ? "ml-6" : ""}`}>{title}</a>

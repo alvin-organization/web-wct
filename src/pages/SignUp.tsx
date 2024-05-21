@@ -29,8 +29,6 @@ interface SignUpForm {
   email: string;
   password: string;
   cPassword: string;
-  profile: string;
-  role: string;
 }
 
 const SignUp = () => {
@@ -39,15 +37,13 @@ const SignUp = () => {
     email: "",
     password: "",
     cPassword: "",
-    profile:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png",
-    role: "User",
   });
 
   const dispatch = useDispatch();
   const { loading, error: errorMessage } = useSelector(
     (state: RootState) => state.user
   );
+  console.log(errorMessage);
 
   const [messageLenght, setMessageLength] = useState<any>({});
   const [messageMatch, setMessageMatch] = useState<any>({});
@@ -119,8 +115,8 @@ const SignUp = () => {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        dispatch(signUpFailure(data.errors));
+      if (data.success === false) {
+        dispatch(signUpFailure(data.error));
         return;
       }
       dispatch(signUpSuccess(data));
@@ -222,6 +218,8 @@ const SignUp = () => {
           <span className="text-danger">{errorMessage.username}</span>
         ) : errorMessage?.email ? (
           <span className="text-danger">{errorMessage.email}</span>
+        ) : errorMessage ? (
+          <span className="text-danger">{errorMessage}</span>
         ) : null}
 
         <span className="w-96">
