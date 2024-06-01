@@ -52,12 +52,12 @@ const App: React.FC = () => {
         <Route path="/subscription/:plan/payment" element={<PaymentForm />} />
 
         {/* Routes for Admin */}
-        <Route path="/admins/signup" element={<SignUpAdmin />} />
-        <Route path="/admins/signin" element={<SignInAdmin />} />
-        <Route path="/admins/dashboard" element={<AdminDashboard />} />
-        <Route path="/admins/admin-request" element={<AdminRequest />} />
-        <Route path="/admins/movies" element={<AdminMovies />} />
-        <Route path="/admins/upload" element={<UploadMovies />} />
+        <Route path="/admin/signup" element={<SignUpAdmin />} />
+        <Route path="/admin/signin" element={<SignInAdmin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/admin-request" element={<AdminRequest />} />
+        <Route path="/admin/movies" element={<AdminMovies />} />
+        <Route path="/admin/upload" element={<UploadMovies />} />
 
         <Route path="/tests" element={<AText />} />
         <Route path="*" element={<NotFoundPage />} />

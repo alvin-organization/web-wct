@@ -56,7 +56,7 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="relative my-2">
       {icon && (
-        <span className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-4 m-0 bg-transparent">
+        <span className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-0 m-4 bg-transparent">
           {icon}
         </span>
       )}
@@ -66,7 +66,7 @@ const Input: React.FC<InputProps> = ({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className={`p-2 text-base border border-secondary bg-primary w-full text-text rounded ${
+        className={`p-2 text-base border border-secondary bg-transparent w-full text-text rounded ${
           icon ? "pl-10 fill-aprimary" : ""
         }`}
         pattern={pattern} // Set pattern attribute for input validation

@@ -19,7 +19,7 @@ import UserRating from "../../../components/rate/UserRating";
 import CountryFlag from "react-country-flag";
 import Movies from "../../../data/movieCover.json";
 import MovieList from "../../../components/MovieList";
-import ReactPlayer from "react-player";
+import { Button } from "react-bootstrap";
 
 interface MoviesInterface {
   movieName: string;
@@ -130,18 +130,18 @@ const MovieDetail = () => {
             <div className="w-2/4 h-full flex flex-col my-2 justify-start items-start px-4 bg-transparent">
               <div className="text-xl bg-transparent mb-2">
                 <p className="bg-transparent">Share to social media</p>
-                <button className="m-2 ">
+                <Button className="m-2 ">
                   <FaFacebook className="bg-transparent" />
-                </button>
-                <button className="m-2">
+                </Button>
+                <Button className="m-2">
                   <FaTwitter className="bg-transparent" />
-                </button>
-                <button className="m-2 ">
+                </Button>
+                <Button className="m-2 ">
                   <FaTiktok className="bg-transparent" />
-                </button>
-                <button className="m-2">
+                </Button>
+                <Button className="m-2">
                   <FaInstagram className="bg-transparent" />
-                </button>
+                </Button>
               </div>
               <div className="flex w-full items-center justify-between bg-transparent my-2">
                 <UserRating />
@@ -153,14 +153,14 @@ const MovieDetail = () => {
             </div>
           </div>
         </div>
-        <ReactPlayer
+        {/* <ReactPlayer
           url="https://www.youtube.com/watch?v=8ugaeA-nMTc"
           controls
           // playing
           volume={0.5}
           width="100%"
           height="500px"
-        />
+        /> */}
 
         <div className="flex justify-between">
           <div className="my-2 border-t border-red py-4 w-8/12">

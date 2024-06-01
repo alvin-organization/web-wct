@@ -71,7 +71,7 @@ const Setting = () => {
           <Label textLabel="Profile" />
         </span>
         <div className="my-4">
-          <img className="w-32 h-32 rounded-full border" src={user.profile} />
+          {/* <img className="w-32 h-32 rounded-full border" src={user.profile} /> */}
         </div>
         <Label htmlFor="" textLabel="Edit Your Informatuon" />
         <p className="text-aprimary font-bold">Username and Email</p>

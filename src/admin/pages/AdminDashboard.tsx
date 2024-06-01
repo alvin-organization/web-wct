@@ -1,33 +1,35 @@
-import Box from "../components/Box";
 import AdminLayout from "../layout/AdminLayout";
+import { FaCamera } from "react-icons/fa";
+import "./style.scss";
+import Box from "../components/Box";
 
 const AdminDashboard = () => {
   return (
     <AdminLayout>
-      <div className="my-2 w-full px-3">
-        <p className="text-3xl text-aprimary mb-4">User</p>
-        <div className="h-32 w-full my-4 p-0 flex items-center justify-between">
+      <div className="w-100">
+        <div className="grid grid-cols-3 gap-4 mt-5">
           <Box />
           <Box />
           <Box />
+          {/* <Box /> */}
         </div>
-        <p className="text-3xl text-aprimary mb-4">Movies</p>
-        <div className="h-32 w-full my-4 p-0 flex items-center justify-between">
+        <div className="grid grid-cols-3 gap-4 mt-5">
           <Box />
           <Box />
           <Box />
+          {/* <Box /> */}
         </div>
-        <p className="text-3xl text-aprimary mb-4">TV-Shows</p>
-        <div className="h-32 w-full my-4 p-0 flex items-center justify-between">
+        <div className="grid grid-cols-3 gap-4 mt-5">
           <Box />
           <Box />
           <Box />
+          {/* <Box /> */}
         </div>
-        <p className="text-3xl text-aprimary mb-4">Request</p>
-        <div className="h-32 w-full my-4 p-0 flex items-center justify-between">
+        <div className="grid grid-cols-3 gap-4 mt-5">
           <Box />
           <Box />
           <Box />
+          {/* <Box /> */}
         </div>
       </div>
     </AdminLayout>

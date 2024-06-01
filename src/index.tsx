@@ -5,7 +5,9 @@ import { store, persistor } from "./app/store";
 import App from "./App";
 import { PersistGate } from "redux-persist/integration/react";
 import reportWebVitals from "./reportWebVitals";
+// import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./index.css";
+
 <link
   href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Noto+Sans+Khmer&family=Roboto&display=swap"
   rel="stylesheet"
@@ -16,13 +18,13 @@ const container = document.getElementById("root")!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
-    <PersistGate persistor={persistor}>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </PersistGate>
-  </React.StrictMode>
+  // <React.StrictMode>
+  // <PersistGate persistor={persistor}>
+  <Provider store={store}>
+    <App />
+  </Provider>
+  // </PersistGate>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

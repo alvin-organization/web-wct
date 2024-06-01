@@ -4,7 +4,6 @@ import VideoPlayer from "../../../components/VideoPlayer";
 import Poster from "../../../components/Poster";
 import { LabelCategory } from "../../../components/Label";
 import MovieList from "../../../components/MovieList";
-import ReactPlayer from "react-player";
 import Video from "../../../assets/Video.mp4";
 import Thumbnail from "../../../assets/Cover.png";
 
