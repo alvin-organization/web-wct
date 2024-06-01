@@ -23,6 +23,8 @@ import {
 } from "../app/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../app/store";
+import OAuth from "../components/OAuth";
+import axios from "../api/axios";
 
 interface SignUpForm {
   username: string;
@@ -43,7 +45,6 @@ const SignUp = () => {
   const { loading, error: errorMessage } = useSelector(
     (state: RootState) => state.user
   );
-  console.log(errorMessage);
 
   const [messageLenght, setMessageLength] = useState<any>({});
   const [messageMatch, setMessageMatch] = useState<any>({});
@@ -171,9 +172,9 @@ const SignUp = () => {
             icon={<FaKey />}
             secound_icon={
               showPassword ? (
-                <FaEyeSlash onClick={toggleShowPassword} />
-              ) : (
                 <FaEye onClick={toggleShowPassword} />
+              ) : (
+                <FaEyeSlash onClick={toggleShowPassword} />
               )
             }
             required={true}
@@ -197,9 +198,9 @@ const SignUp = () => {
             required={true}
             secound_icon={
               showCPassword ? (
-                <FaEyeSlash onClick={toggleShowCPassword} />
-              ) : (
                 <FaEye onClick={toggleShowCPassword} />
+              ) : (
+                <FaEyeSlash onClick={toggleShowCPassword} />
               )
             }
           />
@@ -210,6 +211,8 @@ const SignUp = () => {
             icon={<FaUser className="bg-transparent" />}
           />
         </form>
+
+        <OAuth />
         {errorMessage?.username && errorMessage?.email ? (
           <span className="text-danger">
             The username and email have already been taken.

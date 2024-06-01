@@ -31,6 +31,8 @@ export const Header = ({ page }: { page?: string }) => {
   );
   const [message, setMessage] = useState<string>();
   const [genres, setGenres] = useState<any>([]);
+  const [tvShows, setTvShows] = useState<any>([]);
+
   const [formData, setFormData] = useState({
     search: "",
   });
@@ -58,7 +60,30 @@ export const Header = ({ page }: { page?: string }) => {
         setMessage(data.message);
         return;
       }
+
       setGenres(data.data);
+    } catch (error) {
+      setMessage("");
+    }
+  };
+
+  //TV-Show
+  const fetchTVShow = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/tv_shows", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+      setTvShows(data.data);
     } catch (error) {
       setMessage("");
     }
@@ -66,11 +91,13 @@ export const Header = ({ page }: { page?: string }) => {
 
   useEffect(() => {
     fetchGenres();
+    fetchTVShow();
   }, []);
 
   return (
-    <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-between pr-3 mb-4  ">
+    <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-between pr-3 mb-4 sticky top-0 z-50 ">
       <Logo />
+
       <div className="flex items-center justify-between ">
         <a
           href="/"
@@ -92,92 +119,136 @@ export const Header = ({ page }: { page?: string }) => {
 
         <div className="group">
           <a
-            href="Movies"
+            href="/movies"
             className={`relative mx-2 ${
-              page === "Movies" ? "pointer-events-none" : ""
+              page === "movies" ? "pointer-events-none" : ""
             }`}
           >
             <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
-              <FaFilm fill={page === "Movies" ? "red" : "white"} />
+              <FaFilm fill={page === "movies" ? "red" : "white"} />
             </span>
             <p
               className={`ml-8 ${
-                page === "Movies" ? "text-aprimary font-bold" : "link"
+                page === "movies" ? "text-aprimary font-bold" : "link"
               } display:block hidden xl:flex`}
             >
               Movies
             </p>
           </a>
-          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {genres.map((genre: any) => (
-              <div key={genre.id}>
-                <a href="" className="link">
-                  {genre.genre_name}
-                </a>
-              </div>
-            ))}
+          <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
+            {genres ? (
+              genres.map((genre: any, genre_name: string) => (
+                <div key={genre.id}>
+                  <a href={`/movies/${genre.genre_name}`} className="link">
+                    {genre.genre_name}
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
         <div className="group">
           <a
-            href="Countries"
+            href="tv-show"
             className={`relative mx-2 ${
-              page === "Countries" ? "pointer-events-none" : ""
+              page === "tv-show" ? "pointer-events-none" : ""
             }`}
           >
             <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
-              <FaGlobeAmericas fill={page === "Countries" ? "red" : "white"} />
+              <FaTv fill={page === "tv-show" ? "red" : "white"} />
             </span>
             <p
               className={`ml-8 ${
-                page === "Countries" ? "text-aprimary font-bold" : "link"
+                page === "tv-show" ? "text-aprimary font-bold" : "link"
+              } display:block hidden xl:flex`}
+            >
+              TV-Show
+            </p>
+          </a>
+          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {tvShows ? (
+              tvShows.map((tvShows: any) => (
+                <div key={tvShows.id}>
+                  <a href={`/tv-show/${tvShows.tvShows_name}`} className="link">
+                    {tvShows.tv_show_name}
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
+          </div>
+        </div>
+        <div className="group">
+          <a
+            href="countries"
+            className={`relative mx-2 ${
+              page === "countries" ? "pointer-events-none" : ""
+            }`}
+          >
+            <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
+              <FaGlobeAmericas fill={page === "countries" ? "red" : "white"} />
+            </span>
+            <p
+              className={`ml-8 ${
+                page === "countries" ? "text-aprimary font-bold" : "link"
               } display:block hidden xl:flex`}
             >
               Countries
             </p>
           </a>
-          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {genres.map((genre: any) => (
-              <div key={genre.id}>
-                <a href="" className="link">
-                  {genre.genre_name}
-                </a>
-              </div>
-            ))}
+          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {genres ? (
+              genres.map((genre: any) => (
+                <div key={genre.id}>
+                  <a href="" className="link">
+                    {genre.genre_name}
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
         <div className="group">
           <a
-            href="Years"
+            href="years"
             className={`relative mx-2 ${
-              page === "Years" ? "pointer-events-none" : ""
+              page === "years" ? "pointer-events-none" : ""
             }`}
           >
             <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
-              <FaCalendarAlt fill={page === "Years" ? "red" : "white"} />
+              <FaCalendarAlt fill={page === "years" ? "red" : "white"} />
             </span>
             <p
               className={`ml-8 ${
-                page === "Years" ? "text-aprimary font-bold" : "link"
+                page === "years" ? "text-aprimary font-bold" : "link"
               } display:block hidden xl:flex`}
             >
               Years
             </p>
           </a>
-          <div className="absolute top-12 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {genres.map((genre: any) => (
-              <div key={genre.id}>
-                <a href="" className="link">
-                  {genre.genre_name}
-                </a>
-              </div>
-            ))}
+          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
+            {genres ? (
+              genres.map((genre: any) => (
+                <div key={genre.id}>
+                  <a href="" className="link">
+                    {genre.genre_name}
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
       </div>
       <div className="flex items-center">
         <form>
-          <Input  
+          <Input
             type="text"
             value={formData.search}
             onChange={(value) => handleChange("search", value)}

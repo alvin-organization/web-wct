@@ -13,14 +13,13 @@ import {
   FaUserAlt,
 } from "react-icons/fa";
 import { LabelCategory } from "../../../components/Label";
-import Poster from "../../../components/Poster";
 import { useParams } from "react-router-dom";
 import { ButtonAction } from "../../../components/Button";
 import UserRating from "../../../components/rate/UserRating";
 import CountryFlag from "react-country-flag";
-// import { LinkButton } from "../../../components/Link";
 import Movies from "../../../data/movieCover.json";
 import MovieList from "../../../components/MovieList";
+import ReactPlayer from "react-player";
 
 interface MoviesInterface {
   movieName: string;
@@ -39,7 +38,6 @@ const MovieDetail = () => {
 
   const selectedMovie = Movies.find((movie) => movie.movieName === movieName);
 
-  console.log(selectedMovie?.imageUrl);
   return (
     <AppLayout>
       <div className="my-2">
@@ -49,7 +47,7 @@ const MovieDetail = () => {
             Home
           </a>
           <span className="mr-2">&gt;</span>
-          <a href="movies" className="mr-2 hover:underline">
+          <a href="/movies" className="mr-2 hover:underline">
             Movies
           </a>
           <span className="mr-2">&gt;</span>
@@ -111,8 +109,10 @@ const MovieDetail = () => {
                 </span>
               </div>
               <div className=" mt-10 bg-transparent flex space-x-4 text-2xl">
-                <a    
-                  href="www.youtube.com"
+                <a
+                  href="https://www.youtube.com/watch?v=8ugaeA-nMTc"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center w-fit bg-aprimary px-2 rounded border border-aprimary hover:bg-primary "
                 >
                   <FaFilm className="mr-2 bg-transparent" />
@@ -153,6 +153,15 @@ const MovieDetail = () => {
             </div>
           </div>
         </div>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=8ugaeA-nMTc"
+          controls
+          // playing
+          volume={0.5}
+          width="100%"
+          height="500px"
+        />
+
         <div className="flex justify-between">
           <div className="my-2 border-t border-red py-4 w-8/12">
             <label htmlFor="" className="text-2xl px-3 font-bold text-aprimary">

@@ -1,5 +1,5 @@
 import AppLayout from "../layout/AppLayout";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -9,7 +9,7 @@ import { LabelCategory } from "../components/Label";
 import Poster from "../components/Poster";
 import MovieList from "../components/MovieList";
 
-const HomeScreen: React.FC = () => {
+const HomePage: React.FC = () => {
   // Slider settings
   const settings = {
     dots: true,
@@ -33,6 +33,37 @@ const HomeScreen: React.FC = () => {
   const handleNextSlide = () => {
     sliderRef.current?.slickNext();
   };
+
+  const [message, setMessage] = useState<string>();
+  const [movies, setMovies] = useState<any>([]);
+
+  const fetchMovies = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/movies", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        setMessage(data.message);
+        return;
+      }
+
+      setMovies(data.movies);
+    } catch (error) {
+      setMessage("");
+    }
+  };
+
+  console.log(movies);
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
   return (
     <AppLayout page="home">
       <div className=" container-slider flex justify-center items-center my-2">
@@ -67,16 +98,29 @@ const HomeScreen: React.FC = () => {
           </button>
         </div>
       </div>
-      <LabelCategory htmlFor="popluar" textLabel="Popluar" seeMore={true} />
+      <LabelCategory
+        htmlFor="popular"
+        textLabel="Popular"
+        link={true}
+        linkValue="See more"
+      />
       <MovieList />
       <LabelCategory
-        htmlFor="maybeyoulike"
-        textLabel="Maybe You Like"
-        seeMore={true}
+        htmlFor="latest_movie"
+        textLabel="Latest Movie"
+        link={true}
+        linkValue="See more"
+      />
+      <MovieList />
+      <LabelCategory
+        htmlFor="upcoming_movie"
+        textLabel="Upcoming Movie"
+        link={true}
+        linkValue="See more"
       />
       <MovieList />
     </AppLayout>
   );
 };
 
-export default HomeScreen;
+export default HomePage;

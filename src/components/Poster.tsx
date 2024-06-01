@@ -6,9 +6,14 @@ import { LinkButton } from "./Link";
 interface CoverPosterMovieProps {
   imageUrl: string;
   movieName: string;
+  id: number;
 }
 
-const Poster: React.FC<CoverPosterMovieProps> = ({ imageUrl, movieName }) => {
+const Poster: React.FC<CoverPosterMovieProps> = ({
+  imageUrl,
+  movieName,
+  id,
+}) => {
   return (
     <div
       // href={`/movies/${movieName}/detail`}

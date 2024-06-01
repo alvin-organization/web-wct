@@ -2,14 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import {
   FaPlay,
   FaPause,
-  FaAngleLeft,
-  FaAngleRight,
   FaCog,
   FaExpand,
   FaVolumeUp,
   FaVolumeDown,
   FaForward,
   FaBackward,
+  FaTv,
 } from "react-icons/fa";
 import Video from "../assets/Video.mp4";
 import Thumbnail from "../assets/Cover.png";
@@ -31,6 +30,16 @@ const VideoPlayer: React.FC = () => {
   });
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
+  const [showControls, setShowControls] = useState<boolean>(true);
+
+  let hideControlsTimeout: NodeJS.Timeout;
+
+  const resetHideControlsTimeout = () => {
+    clearTimeout(hideControlsTimeout);
+    hideControlsTimeout = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
 
   useEffect(() => {
     localStorage.setItem("volume", volume.toString());
@@ -78,14 +87,20 @@ const VideoPlayer: React.FC = () => {
         return !prevState;
       });
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const toggleSettings = () => {
     setShowSettings((prevState) => !prevState);
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleResolutionChange = (value: string) => {
     setResolution(value);
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleSpeedChange = (value: string) => {
@@ -94,19 +109,27 @@ const VideoPlayer: React.FC = () => {
     if (videoRef.current) {
       videoRef.current.playbackRate = playbackRate;
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleSubtitleChange = (value: string) => {
     setSubtitle(value);
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleFullScreen = () => {
     const elem = document.documentElement as any;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
     } else if (elem.msRequestFullscreen) {
       elem.msRequestFullscreen();
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const toggleMute = () => {
@@ -118,6 +141,8 @@ const VideoPlayer: React.FC = () => {
       const prevVolume = localStorage.getItem("prevVolume");
       setVolume(prevVolume !== null ? parseFloat(prevVolume) : 1);
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +152,8 @@ const VideoPlayer: React.FC = () => {
     if (videoRef.current) {
       videoRef.current.volume = vol;
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const formatTime = (time: number) => {
@@ -145,6 +172,8 @@ const VideoPlayer: React.FC = () => {
     }
     setCurrentTime(time);
     localStorage.setItem("currentTime", time.toString());
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleForward = () => {
@@ -156,6 +185,8 @@ const VideoPlayer: React.FC = () => {
         videoRef.current.currentTime.toString()
       );
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
   const handleBackward = () => {
@@ -167,15 +198,44 @@ const VideoPlayer: React.FC = () => {
         videoRef.current.currentTime.toString()
       );
     }
+    setShowControls(true);
+    resetHideControlsTimeout();
   };
 
+  const handleTogglePiP = () => {
+    const video = videoRef.current;
+    if (video) {
+      if (document.pictureInPictureElement === video) {
+        document.exitPictureInPicture();
+      } else if (document.pictureInPictureEnabled) {
+        video.requestPictureInPicture();
+      }
+    }
+    setShowControls(true);
+    resetHideControlsTimeout();
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    resetHideControlsTimeout();
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
-    <div className="relative">
+    <div className="relative  ">
       <video
         ref={videoRef}
         className="w-full bg-transparent"
         onClick={togglePlay}
         poster={Thumbnail}
+        onMouseEnter={handleMouseMove}
+        onMouseLeave={resetHideControlsTimeout}
       >
         <source src={Video} type="video/mp4" />
       </video>
@@ -187,111 +247,120 @@ const VideoPlayer: React.FC = () => {
           <FaPlay className="bg-transparent" />
         </button>
       )}
-      <div className="absolute bottom-4 left-4 flex items-center justify-center mb-2 bg-transparent">
-        <button onClick={togglePlay} className="mr-2">
-          {isPlaying ? (
-            <FaPause className="bg-transparent" />
-          ) : (
-            <FaPlay className="bg-transparent" />
-          )}
-        </button>
-        <button
-          className="text-xl mx-2 flex items-center justify-center "
-          onClick={handleBackward}
-        >
-          <p className="m-1 bg-transparent">10s</p>
-          <FaBackward className="bg-transparent" />
-        </button>
-        <button
-          className="text-xl mx-2 flex items-center justify-center"
-          onClick={handleForward}
-        >
-          <FaForward className="bg-transparent" />
-          <p className="m-1 bg-transparent">10s</p>
-        </button>
-        <div className="group flex bg-transparent">
-          <button className="text-2xl mx-2" onClick={toggleMute}>
-            {muted ? (
-              <FaVolumeDown className="bg-transparent" />
-            ) : (
-              <FaVolumeUp className="bg-transparent" />
+      {showControls && (
+        <>
+          <div className="absolute bottom-4 left-4 flex items-center justify-center mb-2 bg-transparent">
+            <button onClick={togglePlay} className="mr-2">
+              {isPlaying ? (
+                <FaPause className="bg-transparent" />
+              ) : (
+                <FaPlay className="bg-transparent" />
+              )}
+            </button>
+            <button
+              className="text-xl mx-2 flex items-center justify-center"
+              onClick={handleBackward}
+            >
+              <p className="m-1 bg-transparent">10s</p>
+              <FaBackward className="bg-transparent" />
+            </button>
+            <button
+              className="text-xl mx-2 flex items-center justify-center"
+              onClick={handleForward}
+            >
+              <FaForward className="bg-transparent" />
+              <p className="m-1 bg-transparent">10s</p>
+            </button>
+            <div className="group flex bg-transparent">
+              <button className="text-2xl mx-2" onClick={toggleMute}>
+                {muted ? (
+                  <FaVolumeDown className="bg-transparent" />
+                ) : (
+                  <FaVolumeUp className="bg-transparent" />
+                )}
+              </button>
+              <div className="group-hover:flex hidden rounded w-40 bg-transparent">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-full bg-transparent accent-aprimary"
+                />
+                <p className="ml-2 bg-transparent">
+                  {Math.round(volume * 100)}%
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="absolute bottom-4 right-4 flex items-center justify-center mb-4 bg-transparent">
+            <button className="text-2xl mx-2" onClick={toggleSettings}>
+              <FaCog className="bg-transparent" />
+            </button>
+            <button className="text-2xl mx-2" onClick={handleTogglePiP}>
+              <FaTv className="bg-transparent" />
+            </button>
+            <button className="text-2xl ml-2" onClick={handleFullScreen}>
+              <FaExpand className="bg-transparent" />
+            </button>
+            {showSettings && (
+              <div className="absolute bottom-full right-0 text-black rounded shadow-md p-2 w-64 space-y-3">
+                <div className="flex my-1 justify-between">
+                  <p>Video Resolution:</p>
+                  <select
+                    className="text-red px-4"
+                    value={resolution}
+                    onChange={(e) => handleResolutionChange(e.target.value)}
+                  >
+                    <option value="420p">420p</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p</option>
+                  </select>
+                </div>
+                <div className="flex my-1 justify-between">
+                  <p>Video Speed:</p>
+                  <select
+                    className="text-red px-4"
+                    value={speed}
+                    onChange={(e) => handleSpeedChange(e.target.value)}
+                  >
+                    <option value="x0.5">0.5x</option>
+                    <option value="x1">1x</option>
+                    <option value="x1.25">1.25x</option>
+                    <option value="x1.5">1.5x</option>
+                    <option value="x1.75">1.75x</option>
+                    <option value="x2">2x</option>
+                  </select>
+                </div>
+                <div className="flex my-1 justify-between">
+                  <p>Video Subtitle:</p>
+                  <select
+                    className="text-red px-4"
+                    value={subtitle}
+                    onChange={(e) => handleSubtitleChange(e.target.value)}
+                  >
+                    <option value="English">English</option>
+                    <option value="Khemr">Khemr</option>
+                  </select>
+                </div>
+              </div>
             )}
-          </button>
-          <div className="group-hover:flex hidden rounded w-40 bg-transparent ">
+          </div>
+          <div className="absolute bottom-0 bg-transparent w-full flex items-center justify-between rounded px-4">
+            {formatTime(currentTime)} / {formatTime(duration)}
             <input
               type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w-full bg-transparent"
+              min={0}
+              max={duration || 100} // Set max to 100 if duration is not available yet
+              value={currentTime}
+              onChange={handleSliderChange}
+              className="w-11/12 accent-aprimary"
             />
-            <p className="ml-2 bg-transparent">{Math.round(volume * 100)}%</p>
           </div>
-        </div>
-      </div>
-      <div className="absolute bottom-4 right-4 flex items-center justify-center mb-4 bg-transparent">
-        <button className="text-2xl mx-2" onClick={toggleSettings}>
-          <FaCog className="bg-transparent" />
-        </button>
-        <button className="text-2xl ml-2" onClick={handleFullScreen}>
-          <FaExpand className="bg-transparent" />
-        </button>
-        {showSettings && (
-          <div className="absolute bottom-full right-0 text-black rounded shadow-md p-2 w-64 space-y-3">
-            <div className="flex my-1 justify-between">
-              <p>Video Resolution:</p>
-              <select
-                className="text-red px-4"
-                value={resolution}
-                onChange={(e) => handleResolutionChange(e.target.value)}
-              >
-                <option value="420p">420p</option>
-                <option value="720p">720p</option>
-                <option value="1080p">1080p</option>
-              </select>
-            </div>
-            <div className="flex my-1 justify-between">
-              <p>Video Speed:</p>
-              <select
-                className="text-red px-4"
-                value={speed}
-                onChange={(e) => handleSpeedChange(e.target.value)}
-              >
-                <option value="x0.5">0.5x</option>
-                <option value="x1">1x</option>
-                <option value="x1.25">1.25x</option>
-                <option value="x1.5">1.5x</option>
-                <option value="x1.75">1.75x</option>
-                <option value="x2">2x</option>
-              </select>
-            </div>
-            <div className="flex my-1 justify-between">
-              <p>Video Subtitle:</p>
-              <select
-                className="text-red px-4"
-                value={subtitle}
-                onChange={(e) => handleSubtitleChange(e.target.value)}
-              >
-                <option value="English">English</option>
-                <option value="Khemr">Khemr</option>
-              </select>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="absolute bottom-0 w-full flex items-center justify-between w-full rounded px-4">
-        {formatTime(currentTime)} / {formatTime(duration)}
-        <input
-          type="range"
-          min={0}
-          max={duration || 100} // Set max to 100 if duration is not available yet
-          value={currentTime}
-          onChange={handleSliderChange}
-          className="w-11/12"
-        />
-      </div>
+        </>
+      )}
     </div>
   );
 };
