@@ -1,5 +1,4 @@
 import AdminLayout from "../layout/AdminLayout";
-import { FaCamera } from "react-icons/fa";
 import "./style.scss";
 import Box from "../components/Box";
 
