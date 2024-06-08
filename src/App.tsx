@@ -22,34 +22,41 @@ import AText from "./components/AText";
 import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/movies/MoviesPage";
 import MoviesGenrePage from "./pages/movies/MoviesGenrePage";
+import PrivateRouteUser from "./components/private_route/PrivateRouteUser";
+import PrivateRouteGuest from "./components/private_route/PrivateRouteGuest";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* Authenication */}
+        <Route element={<PrivateRouteUser />}>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/reset-password/new-password/:token"
+            element={<NewPassword />}
+          />
+        </Route>
+
         {/* Guest */}
         <Route path="/" element={<HomePage />} />
         <Route path="/:page" element={<MoviesPage />} />
-        <Route path="/:page/:genre" element={<MoviesGenrePage />} />
-
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route
-          path="/reset-password/new-password/:token"
-          element={<NewPassword />}
-        />
+        <Route path="/:page/:id" element={<MoviesGenrePage />} />
         <Route path="/explore" element={<Explore />} />
 
         {/* Movie */}
-        <Route path="/movies/:movieName/detail" element={<MovieDetail />} />
-        <Route path="/movies/:movieName/play" element={<MoviePlay />} />
+        <Route path="/movies/:id/detail" element={<MovieDetail />} />
 
         {/* User */}
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/setting" element={<Setting />} />
-        <Route path="/subscription" element={<Subscription />} />
-        <Route path="/subscription/:plan/payment" element={<PaymentForm />} />
+        <Route element={<PrivateRouteGuest />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/setting" element={<Setting />} />
+          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/subscription/:id/payment" element={<PaymentForm />} />
+          <Route path="/movies/:id/play" element={<MoviePlay />} />
+        </Route>
 
         {/* Routes for Admin */}
         <Route path="/admin/signup" element={<SignUpAdmin />} />
@@ -59,7 +66,6 @@ const App: React.FC = () => {
         <Route path="/admin/movies" element={<AdminMovies />} />
         <Route path="/admin/upload" element={<UploadMovies />} />
 
-        <Route path="/tests" element={<AText />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

@@ -205,6 +205,17 @@ const SignUp = () => {
             }
           />
           {errMatch ? <span className="text-danger">{messageMatch}</span> : ""}
+          {errorMessage?.username && errorMessage?.email ? (
+            <span className="text-danger ">
+              The username and email have already been taken.
+            </span>
+          ) : errorMessage?.username ? (
+            <span className="text-danger">{errorMessage.username}</span>
+          ) : errorMessage?.email ? (
+            <span className="text-danger">{errorMessage.email}</span>
+          ) : errorMessage ? (
+            <span className="text-danger">{errorMessage}</span>
+          ) : null}
           <ButtonAction
             disabled={loading}
             text={loading ? "Loading..." : "Sign Up"}
@@ -213,17 +224,6 @@ const SignUp = () => {
         </form>
 
         <OAuth />
-        {errorMessage?.username && errorMessage?.email ? (
-          <span className="text-danger">
-            The username and email have already been taken.
-          </span>
-        ) : errorMessage?.username ? (
-          <span className="text-danger">{errorMessage.username}</span>
-        ) : errorMessage?.email ? (
-          <span className="text-danger">{errorMessage.email}</span>
-        ) : errorMessage ? (
-          <span className="text-danger">{errorMessage}</span>
-        ) : null}
 
         <span className="w-96">
           <span className="flex items-center">

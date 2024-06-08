@@ -12,6 +12,7 @@ interface SliderGroupProps {
   duration: string;
   releaseYear: string;
   imdb: string;
+  id: string;
 }
 
 export const SliderGroup: FC<SliderGroupProps> = ({
@@ -22,10 +23,11 @@ export const SliderGroup: FC<SliderGroupProps> = ({
   duration,
   releaseYear,
   imdb,
+  id,
 }) => {
   return (
     <div className="silder-group group">
-      <a href="movies/acb/detail">
+      <a href={`/movies/${id}/detail`}>
         <img className="silder-image" src={imageUrl} alt={title} />
       </a>
       <div className=" group-hover:opacity-80 absolute border-r-4 border-aprimary top-0 right-0 w-96 h-96 flex flex-col items-center px-4 py-2 bg-primary opacity-0 transition-opacity duration-300 hover:opacity-80">
@@ -39,14 +41,9 @@ export const SliderGroup: FC<SliderGroupProps> = ({
           {description}
         </span>
         <div className="h-40 w-full border border-aprimary my-2 p-2 flex flex-col justify-between">
+          <span key={id}>Genre : {genre}</span>
           <span>
-            Genre :{" "}
-            <a href="#" className="hover:font-bold text-aprimary">
-              {genre}
-            </a>
-          </span>
-          <span>
-            Duration: <span>{duration}</span>
+            Duration: <span>{duration}min</span>
           </span>
           <span>
             Release: <span>{releaseYear}</span>
@@ -59,7 +56,7 @@ export const SliderGroup: FC<SliderGroupProps> = ({
           </span>
         </div>
         <ButtonLink
-          href="movies/acb/detail"
+          href={`/movies/${id}/detail`}
           text="Watching"
           icon={
             <FaTv style={{ fill: "white", backgroundColor: "transparent" }} />

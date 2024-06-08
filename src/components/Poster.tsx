@@ -26,11 +26,11 @@ const Poster: React.FC<CoverPosterMovieProps> = ({
       />
       <div className="w-40 h-60 absolute top-0 opacity-0 flex flex-col justify-center items-center cursor-pointer transition-opacity group-hover:opacity-80">
         <LinkButton
-          url={`/movies/${movieName}/detail`}
+          url={`/movies/${id}/detail`}
           icon={
             <FaPlayCircle fill="red" className="bg-transparent" size="32" />
           }
-          className="w-full h-full flex flex-col items-center justify-center"
+          className="w-full h-full flex flex-col items-center justify-center text-center"
           text={movieName}
         />
       </div>

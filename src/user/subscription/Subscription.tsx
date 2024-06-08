@@ -1,17 +1,47 @@
-import {
-  FaCalendar,
-  FaCheck,
-  FaFilm,
-  FaPlane,
-  FaSave,
-  FaTimes,
-  FaTv,
-} from "react-icons/fa";
+import { FaCheck, FaFilm, FaSave, FaTimes, FaTv } from "react-icons/fa";
 import AppLayout from "../../layout/AppLayout";
 import Logo from "../../assets/logo.png";
-import { LinkButton } from "../../components/Link";
+import axios from "../../api/axios";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
 
 const Subscription = () => {
+  const user = useSelector(
+    (state: RootState) => state?.user?.currentUser?.data
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any>([]);
+  const [errorSubscriptionPlans, setErrorSubscriptionPlans] = useState<any>([]);
+
+  const token = user?.api_token;
+  const fetchSubscriptionPlan = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/subscription_plans", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      if (!data.success) {
+        setLoading(false);
+        setErrorSubscriptionPlans(data.message);
+        return;
+      }
+      setLoading(false);
+      setSubscriptionPlans(data.data);
+    } catch (error) {
+      setErrorSubscriptionPlans(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubscriptionPlan();
+  }, []);
+
   return (
     <AppLayout>
       <div className="flex flex-col w-5/6 m-auto">
@@ -33,18 +63,21 @@ const Subscription = () => {
                 <th className="border-b p-0 w-6/12">
                   <img className="h-20" src={Logo} alt="" />
                 </th>
-                <th className="border-b p-4 w-2/12">
-                  <p className="text-sm text-secondary">Bronze</p>
-                  <p className="text-3xl text-aprimary">$1.5</p>
-                </th>
-                <th className="border-b  w-2/12">
-                  <p className="text-sm text-secondary">Silver</p>
-                  <p className="text-3xl text-aprimary">$2.5</p>
-                </th>
-                <th className="border-b  w-2/12">
-                  <p className="text-sm text-secondary">Gold</p>
-                  <p className="text-3xl text-aprimary">$5</p>
-                </th>
+                {subscriptionPlans?.map(
+                  (subscriptionPlan: any, index: number) => (
+                    <th
+                      key={subscriptionPlan.id || index}
+                      className="border-b p-4 w-2/12"
+                    >
+                      <p className="text-sm text-secondary">
+                        {subscriptionPlan.subscription_plan_name}
+                      </p>
+                      <p className="text-3xl text-aprimary">
+                        {subscriptionPlan.subscription_plan_price}$
+                      </p>
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody>
@@ -118,15 +151,18 @@ const Subscription = () => {
               </tr>
               <tr className="">
                 <th className="p-4 group-hover:pl-8"></th>
-                <th className="w-2/12 group-hover:scale-105 bg-transparent ">
-                  <a
-                    href="subscription/Bronze/payment"
-                    className="border border-aprimary px-2 p-1 rounded bg-aprimary hover:bg-primary"
-                  >
-                    Choose
-                  </a>
-                </th>
-                <th className="w-2/12 group-hover:scale-105 bg-transparent">
+                {subscriptionPlans?.map((subscriptionPlan: any) => (
+                  <th className="w-2/12 group-hover:scale-105 bg-transparent ">
+                    <a
+                      href={`subscription/${subscriptionPlan.id}/payment`}
+                      className="border border-aprimary px-2 p-1 rounded bg-aprimary hover:bg-primary"
+                    >
+                      Choose
+                    </a>
+                  </th>
+                ))}
+
+                {/* <th className="w-2/12 group-hover:scale-105 bg-transparent">
                   <a
                     href="subscription/Siliver/payment"
                     className="border border-aprimary px-2 p-1 rounded bg-aprimary hover:bg-primary"
@@ -141,7 +177,7 @@ const Subscription = () => {
                   >
                     Choose
                   </a>
-                </th>
+                </th> */}
               </tr>
             </tbody>
           </table>

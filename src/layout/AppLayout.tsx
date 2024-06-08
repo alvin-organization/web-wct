@@ -10,7 +10,7 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children, page }) => {
   return (
     <div className="app-layout">
-      <Header page={page} />  
+      <Header page={page} />
       <main>{children}</main>
       <Footer />
     </div>

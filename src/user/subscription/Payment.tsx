@@ -1,24 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LabelInput } from "../../components/Label";
 import Input from "../../components/Input";
 import {
   FaArrowLeft,
-  FaBandAid,
   FaCalendarAlt,
-  FaCcMastercard,
   FaCheck,
   FaCreditCard,
   FaEnvelope,
   FaLock,
-  FaPaypal,
-  FaUniversalAccess,
   FaUser,
-  FaVial,
   FaWallet,
 } from "react-icons/fa";
 import AppLayout from "../../layout/AppLayout";
 import { ButtonAction } from "../../components/Button";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import axios from "../../api/axios";
 
 interface PaymentForm {
   cardNumber: string;
@@ -34,8 +32,8 @@ const PaymentForm: React.FC = () => {
     name: "",
   });
 
-  const params = useParams<{ plan: string }>();
-  const { plan } = params;
+  const params = useParams<{ id: string }>();
+  const { id } = params;
 
   const handleChange = (inputType: keyof PaymentForm, newValue: string) => {
     setFormData({
@@ -46,8 +44,46 @@ const PaymentForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Add payment processing logic here
   };
+
+  const user = useSelector(
+    (state: RootState) => state?.user?.currentUser?.data
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<any>([]);
+  const [errorSubscriptionPlan, setErrorSubscriptionPlan] = useState<any>([]);
+
+  const token = user?.api_token;
+  const fetchSubscriptionPlanById = async (id: string): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/subscription_plans/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      if (!data.success) {
+        setLoading(false);
+        setErrorSubscriptionPlan(data.message);
+        return;
+      }
+      setLoading(false);
+      setSubscriptionPlan(data.data);
+    } catch (error) {
+      setErrorSubscriptionPlan(error);
+    }
+  };
+
+  console.log(subscriptionPlan);
+
+  useEffect(() => {
+    if (id) {
+      fetchSubscriptionPlanById(id);
+    }
+  }, [id]);
 
   return (
     <AppLayout>
@@ -60,7 +96,7 @@ const PaymentForm: React.FC = () => {
           <p className="bg-transparent">
             You have been select with{" "}
             <span className="text-yellow-500 font-bold bg-transparent">
-              {plan}
+              {subscriptionPlan.subscription_plan_name}
             </span>{" "}
             plan.
           </p>
@@ -69,14 +105,14 @@ const PaymentForm: React.FC = () => {
         <span className="flex items-center justify-between pb-2 border-b  border-aprimary">
           <p className="font-bold text-2xl">Total</p>
           <p className="font-bold text-2xl">
-            $1.5
+            {subscriptionPlan.subscription_plan_price}$
             <span className="text-sm text-gray-500">/month</span>
           </p>
         </span>
         <div className="flex justify-between items-center">
           <span className="flex items-center space-x-2 my-2 ">
             <FaEnvelope fill="gray" />
-            <p className="flex items-center text-gray-500">exmaple@gmail.com</p>
+            <p className="flex items-center text-gray-500">{user?.email}</p>
           </span>
           <span className="flex items-center space-x-2 my-2 ">
             <FaUser fill="gray" />

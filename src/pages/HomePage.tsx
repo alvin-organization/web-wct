@@ -1,13 +1,36 @@
-import AppLayout from "../layout/AppLayout";
 import { useEffect, useRef, useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { FaAngleLeft, FaAngleRight, FaTv } from "react-icons/fa";
+import { FaAngleLeft, FaAngleRight, FaSadCry, FaTv } from "react-icons/fa";
 import { SliderGroup } from "../components/slider/Slider";
 import { LabelCategory } from "../components/Label";
+import AppLayout from "../layout/AppLayout";
+import Slider from "react-slick";
 import Poster from "../components/Poster";
 import MovieList from "../components/MovieList";
+import axios from "../api/axios";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Pusher from "pusher-js";
+
+interface Movie {
+  id: number;
+  tv_show_id: number | null;
+  title: string;
+  overview: string;
+  run_time: number;
+  release_date: string;
+  poster_image: string;
+  cover_image: string;
+  trailer_url: string;
+  total_likes: number;
+  total_ratings: number;
+  average_rating: string;
+  popularity: number;
+  terms_status: string;
+  upload_status: string;
+  user_subscription: boolean;
+  expire_subscription: string | null;
+  last_upload_date: string;
+}
 
 const HomePage: React.FC = () => {
   // Slider settings
@@ -34,34 +57,119 @@ const HomePage: React.FC = () => {
     sliderRef.current?.slickNext();
   };
 
-  const [message, setMessage] = useState<string>();
-  const [movies, setMovies] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [errorMovies, setErrorMovies] = useState<any>([]);
+  const [movieGenres, setMovieGenres] = useState<any>([]);
+  const [errorMovieGenres, setErrorMovieGenres] = useState<any>([]);
+  const [moviesLatest, setMoviesLatest] = useState<any>([]);
+  const [errorMoviesLatest, setErrorMoviesLatest] = useState<any>([]);
+  const [moviesPopluar, setMoviesPopluar] = useState<any>([]);
+  const [errorMoviesPopluar, setErrorMoviesPopluar] = useState<any>([]);
+  const [moviesTopRated, setMoviesTopRated] = useState<any>([]);
+  const [errorMoviesTopRated, setErrorMoviesTopRated] = useState<any>([]);
 
+  //Fetch all movie
   const fetchMovies = async (): Promise<void> => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/movies", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
+      setLoading(true);
+      const response = await axios.get("/movies");
+      const data = response.data;
       if (!data.success) {
-        setMessage(data.message);
+        setLoading(false);
+        setErrorMovies(data.message);
         return;
       }
-
-      setMovies(data.movies);
+      setLoading(false);
+      setMovies(data.data);
     } catch (error) {
-      setMessage("");
+      setErrorMovies(error);
     }
   };
 
-  console.log(movies);
+  // Fetch genres of movie
+  const fetchMovieGenres = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/movie_genres");
+      const data = await response.data;
+
+      if (!data.success === true) {
+        setLoading(false);
+        setErrorMovieGenres(data.message);
+        return;
+      }
+
+      setLoading(false);
+      setMovieGenres(data.data);
+    } catch (error) {
+      setErrorMovieGenres(error);
+    }
+  };
+
+  //Fetch movie latest
+  const fetchLatest = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/latest");
+      const data = response.data;
+
+      if (!data.success) {
+        setLoading(false);
+        setErrorMoviesLatest(data.message);
+        return;
+      }
+
+      setLoading(false);
+      setMoviesLatest(data.data);
+    } catch (error) {
+      setErrorMoviesLatest(error);
+    }
+  };
+
+  // Fetch movie popluar
+  const fetchPopular = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/popular");
+      const data = response.data;
+      if (!data.success) {
+        setLoading(false);
+        setErrorMoviesPopluar(data.message);
+        return;
+      }
+      setLoading(false);
+      setMoviesPopluar(data.data);
+    } catch (error) {
+      setErrorMoviesPopluar(error);
+    }
+  };
+
+  // Fetch movie top rate
+  const fetchTopRated = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/top_rated");
+      const data = response.data;
+      if (!data.success) {
+        setLoading(false);
+        setErrorMoviesTopRated(data.message);
+        return;
+      }
+      setLoading(false);
+      setMoviesTopRated(data.data);
+    } catch (error) {
+      setLoading(false);
+      setErrorMoviesTopRated(error);
+    }
+  };
+
   useEffect(() => {
     fetchMovies();
+    fetchMovieGenres();
+    fetchLatest();
+    fetchPopular();
+    fetchTopRated();
   }, []);
 
   return (
@@ -73,24 +181,31 @@ const HomePage: React.FC = () => {
           </button>
         </div>
         <Slider ref={sliderRef} {...settings} className="silder">
-          <SliderGroup
-            imageUrl="https://i0.wp.com/thebftonline.com/wp-content/uploads/2022/09/mnet-movies-spiderman-kv-scaled.jpg?fit=2560%2C1392&ssl=1"
-            title="Titanic"
-            description="In Japan in the year 1600, at the dawn of a century-defining civil war, Lord Yoshii Toranaga is fighting for his life as his enemies on the Council of Regents unite against him, when a mysterious European ship is found marooned in a nearby fishing village."
-            genre="Comandy"
-            duration="120min"
-            releaseYear="2023"
-            imdb="6.2"
-          />
-          <SliderGroup
-            imageUrl="https://media.themoviedb.org/t/p/w780/cyecB7godJ6kNHGONFjUyVN9OX5.jpg"
-            title="Titanic"
-            description="In Japan in the year 1600, at the dawn of a century-defining civil war, Lord Yoshii Toranaga is fighting for his life as his enemies on the Council of Regents unite against him, when a mysterious European ship is found marooned in a nearby fishing village."
-            genre="Comandy"
-            duration="120min"
-            releaseYear="2023"
-            imdb="6.2"
-          />
+          {movies?.map((movie: any) => (
+            <SliderGroup
+              key={movie.id}
+              id={movie.id}
+              imageUrl={movie.cover_image}
+              title={movie.title}
+              description={movie.overview}
+              genre={movieGenres
+                ?.filter((movieGenre: any) => movieGenre.movie_id === movie.id)
+                .map((movieGenre: any, index: number) => (
+                  <span key={movieGenre.id || index} className="space-x-2 ml-2">
+                    <a
+                      href={`/movies/${movieGenre.genre_id}`}
+                      key={movieGenre.id}
+                      className="hover:font-bold text-aprimary"
+                    >
+                      {movieGenre.genre_name}
+                    </a>
+                  </span>
+                ))}
+              duration={movie.run_time}
+              releaseYear={movie.release_date}
+              imdb={movie.average_rating}
+            />
+          ))}
         </Slider>
         <div className="btn-arrow">
           <button onClick={handleNextSlide}>
@@ -104,21 +219,90 @@ const HomePage: React.FC = () => {
         link={true}
         linkValue="See more"
       />
-      <MovieList />
+      {loading ? (
+        <p>Loading...</p>
+      ) : moviesPopluar?.length > 0 ? (
+        <div className="flex m-4">
+          {moviesPopluar?.map((movie: any) => (
+            <div key={movie.id} className="m-2">
+              <Poster
+                id={movie.id}
+                movieName={movie.title}
+                imageUrl={movie.poster_image}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>{errorMoviesPopluar}</p>
+      )}
       <LabelCategory
-        htmlFor="latest_movie"
+        htmlFor="top-rated"
+        textLabel="Top Rated"
+        link={true}
+        linkValue="See more"
+      />
+      {loading ? (
+        <p>Loading...</p>
+      ) : moviesTopRated?.length > 0 ? (
+        <div className="flex m-4">
+          {moviesTopRated?.map((movie: any) => (
+            <div key={movie.id} className="m-2">
+              <Poster
+                id={movie.id}
+                movieName={movie.title}
+                imageUrl={movie.poster_image}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>{errorMoviesTopRated}</p>
+      )}
+      <LabelCategory
+        htmlFor="latest-movies"
         textLabel="Latest Movie"
         link={true}
         linkValue="See more"
       />
-      <MovieList />
-      <LabelCategory
-        htmlFor="upcoming_movie"
-        textLabel="Upcoming Movie"
-        link={true}
-        linkValue="See more"
-      />
-      <MovieList />
+      {loading ? (
+        <p>Loading...</p>
+      ) : moviesLatest?.length > 0 ? (
+        <div className="flex m-4">
+          {moviesLatest?.map((movie: any) => (
+            <div key={movie.id} className="m-2">
+              <Poster
+                id={movie.id}
+                movieName={movie.title}
+                imageUrl={movie.poster_image}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>{errorMoviesLatest}</p>
+      )}
+      <LabelCategory htmlFor="all-movies" textLabel="All Movies" />
+      {loading ? (
+        <p>Loading...</p>
+      ) : moviesLatest?.length > 0 ? (
+        <div className="flex m-4">
+          {moviesLatest
+            ?.slice()
+            .sort(() => 0.5 - Math.random())
+            .map((movie: any) => (
+              <div key={movie.id} className="m-2">
+                <Poster
+                  id={movie.id}
+                  movieName={movie.title}
+                  imageUrl={movie.poster_image}
+                />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <p>{errorMoviesLatest}</p>
+      )}
     </AppLayout>
   );
 };

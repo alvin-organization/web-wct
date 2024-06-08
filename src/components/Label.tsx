@@ -45,8 +45,7 @@ export const LabelCategory: React.FC<LabelProps> = ({
           <FaAngleDoubleRight
             style={{ backgroundColor: "transparent", marginRight: "4px" }}
           />
-
-          <a href={`/movies/${textLabel}`} className="link-bg-red">
+          <a href={`/${htmlFor}`} className="link-bg-red">
             {linkValue}
           </a>
         </span>

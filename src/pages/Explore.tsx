@@ -1,34 +1,35 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { Logo } from "../components/Logo";
-import { FaSearch, FaTimes } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaSearch, FaTimes } from "react-icons/fa";
 import Tag from "../components/Tag";
-import MovieList from "../components/MovieList";
+import { useNavigate } from "react-router-dom";
 
 const Explore: React.FC = () => {
-  const [formData, setFormData] = useState<{
-    search: string;
-    selectedGenres: string[];
-  }>({
-    search: "",
-    selectedGenres: [], // Initialize selectedGenres as an empty array
+  const navigate = useNavigate();
+  const [message, setMessage] = useState<string>();
+  const [genres, setGenres] = useState<any>([]);
+  const [tvShows, setTvShows] = useState<any>([]);
+  const [countries, setCountries] = useState<any>([]);
+  const [years, setYears] = useState<any>([]);
+  const [formData, setFormData] = useState<{ selectedGenres: string[] }>({
+    selectedGenres: [],
   });
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Initialize selectedTags as an empty array
+  const [isGenresVisible, setIsGenresVisible] = useState(false);
 
-  const handleChange = (inputType: string, newValue: string): void => {
-    setFormData({
-      ...formData,
-      [inputType]: newValue,
-    });
+  const handleDown = () => {
+    setIsGenresVisible(!isGenresVisible);
   };
 
-  const onInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const { value } = e.target;
-    const selectedTagsString = selectedTags.join(", "); // Convert selected tags array to a comma-separated string
-    const newValue = `${selectedTagsString} ${value}`; // Concatenate selected tags with search value
-    handleChange("search", newValue);
+  const handleClear = () => {
+    setFormData({ selectedGenres: [] });
+    setSelectedTags([]);
+    if (selectedTags.length === 0 && formData.selectedGenres.length === 0) {
+      navigate  ("/"); // Redirect to homepage
+    }
   };
 
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const handleTagSelect = (tag: string): void => {
     let updatedSelectedTags: string[] = [];
 
@@ -37,21 +38,111 @@ const Explore: React.FC = () => {
         (selectedTag) => selectedTag !== tag
       );
     } else {
-      if (selectedTags.length < 3) {
-        updatedSelectedTags = [...selectedTags, tag];
-      } else {
-        return;
-      }
+      updatedSelectedTags = [...selectedTags, tag];
     }
-
     setFormData((prevFormData) => ({
       ...prevFormData,
-      selectedGenres: updatedSelectedTags.slice(0, 3),
-      search: updatedSelectedTags.join(", "), // Update search value with selected tags
+      selectedGenres: updatedSelectedTags,
     }));
 
     setSelectedTags(updatedSelectedTags);
   };
+
+  // Fetch Genres
+  const fetchGenres = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/genres", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+
+      setGenres(data.data);
+    } catch (error) {
+      setMessage("");
+    }
+  };
+
+  // Fetch TV Shows
+  const fetchTVShow = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/tv_shows", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+      setTvShows(data.data);
+    } catch (error) {
+      setMessage("");
+    }
+  };
+
+  // Fetch Countries
+  const fetchCountries = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/countries", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+      setCountries(data.data);
+    } catch (error) {
+      setMessage("");
+    }
+  };
+
+  // Fetch Years
+  const fetchYears = async (): Promise<void> => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/years", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+      setYears(data.data);
+    } catch (error) {
+      setMessage("An error occurred while fetching the years.");
+    }
+  };
+
+  useEffect(() => {
+    fetchGenres();
+    fetchTVShow();
+    fetchCountries();
+    fetchYears();
+  }, []);
 
   return (
     <>
@@ -65,33 +156,89 @@ const Explore: React.FC = () => {
               placeholder="Search by selected tags"
               id="search"
               type="text"
-              value={formData.search}
+              value={formData.selectedGenres.join(", ")}
               readOnly
             />
           </div>
-          <FaTimes className="right-0" />
+          <FaTimes onClick={handleClear} className="right-0 cursor-pointer" />
         </form>
       </div>
-      <div className="w-full h-72 border-x border-b border-secondary flex justify-between">
-        <div className="border-r w-full py-2 px-3 ">
-          <label>Genre</label>
-          <div className="flex flex-wrap scrollbar-hide">
-            <Tag label="Action" onSelect={handleTagSelect} />
-            <Tag label="Comady" onSelect={handleTagSelect} />
+      <div>
+        <div
+          onClick={handleDown}
+          className="w-full border flex items-center group cursor-pointer font-bold text-aprimary"
+        >
+          <div className="w-full py-2 px-4">
+            <label>Genre</label>
+          </div>
+          <div className="w-full py-2 px-4">
+            <label>TV-Show</label>
+          </div>
+          <div className="w-full py-2 px-4">
+            <label>Countries</label>
+          </div>
+          <div className="w-full py-2 px-4 flex justify-between items-center">
+            <label>Years</label>
+            {isGenresVisible ? (
+              <FaArrowUp className="text-xl" />
+            ) : (
+              <FaArrowDown className="text-xl" />
+            )}
           </div>
         </div>
-        <div className="border-r w-full py-2 px-3">
-          <label>TV-Show</label>
-        </div>
-        <div className="border-r w-full py-2 px-3">
-          <label>Countries</label>
-        </div>
-        <div className="border-r w-full py-2 px-3">
-          <label>Years</label>
-        </div>
+        {isGenresVisible && (
+          <div className="w-full h-60 flex justify-between overflow-hidden border-b border-x">
+            <div className="w-full py-2 px-3 overflow-y-auto max-h-60">
+              <div className="flex flex-wrap">
+                {genres?.map((genre: any) => (
+                  <Tag
+                    key={genre.id}
+                    label={genre.genre_name}
+                    onSelect={handleTagSelect}
+                    isSelected={selectedTags.includes(genre.genre_name)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="w-full py-2 px-3 overflow-y-auto max-h-60">
+              <div className="flex flex-wrap">
+                {tvShows?.map((tvShow: any) => (
+                  <Tag
+                    key={tvShow.id}
+                    label={tvShow.tv_show_name}
+                    onSelect={handleTagSelect}
+                    isSelected={selectedTags.includes(tvShow.tv_show_name)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="w-full py-2 px-3 overflow-y-auto max-h-60">
+              <div className="flex flex-wrap">
+                {countries?.map((country: any) => (
+                  <Tag
+                    key={country.id}
+                    label={country.country_name}
+                    onSelect={handleTagSelect}
+                    isSelected={selectedTags.includes(country.country_name)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="w-full py-2 px-3 overflow-y-auto max-h-60">
+              <div className="flex flex-wrap">
+                {years?.map((year: any) => (
+                  <Tag
+                    key={year.id}
+                    label={year.year}
+                    onSelect={handleTagSelect}
+                    isSelected={selectedTags.includes(year.year)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="my-4"></div>
-      <MovieList />
     </>
   );
 };

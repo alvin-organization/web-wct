@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { app } from "../firebase";
 import { signInSuccess } from "../app/user/userSlice";
+import { FaGoogle } from "react-icons/fa";
+import { ButtonAction } from "./Button";
 
 const OAuth: React.FC = () => {
   const dispatch = useDispatch();
@@ -48,7 +50,11 @@ const OAuth: React.FC = () => {
   };
 
   return (
-    <button onClick={handleGoogleClick}>Continue with Google account</button>
+    <ButtonAction
+      icon={<FaGoogle className="bg-transparent" />}
+      text=" Continue with Google account"
+      onClick={handleGoogleClick}
+    />
   );
 };
 

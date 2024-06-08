@@ -41,8 +41,6 @@ const MovieList: React.FC<MovieListProps> = ({ genre }) => {
       setMessage("");
     }
   };
-
-  console.log(movies);
   useEffect(() => {
     fetchMovies();
   }, []);

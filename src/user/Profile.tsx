@@ -17,6 +17,7 @@ import {
   signOutStart,
   signOutSuccess,
 } from "../app/user/userSlice";
+import axiosInstance from "../api/axios"; // Import your Axios instance
 
 const Profile = () => {
   const user = useSelector(
@@ -35,15 +36,18 @@ const Profile = () => {
     dispatch(signOutStart());
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/signout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.post(
+        "/signout",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const data = await response.json();
+      const data = response.data;
 
       console.log(data);
 
@@ -53,12 +57,10 @@ const Profile = () => {
       }
 
       dispatch(signOutSuccess(data));
-      navigate("/login"); // Redirect to login page after signing out
     } catch (error) {
       dispatch(signOutFailure(error || "Sign out failed"));
     }
   };
-
   return (
     <AppLayout>
       <div className="flex flex-col items-center w-1/2 m-auto">

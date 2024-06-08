@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Logo } from "../components/Logo"; // Adjust import for Logo
-import Input from "../components/Input";
+import { Logo } from "../components/Logo";
+import { Link, LinkDisabled } from "../components/Link";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 import {
   FaCalendarAlt,
   FaCompass,
@@ -8,14 +10,13 @@ import {
   FaGlobeAmericas,
   FaHome,
   FaSearch,
+  FaStar,
   FaTv,
   FaUserAlt,
 } from "react-icons/fa";
-import { Link, LinkDisabled } from "../components/Link";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import Input from "../components/Input";
+import axios from "../api/axios";
 
-//Header Logo only
 export const HeaderLogo = () => {
   return (
     <div className="w-full h-18 border-b-2 border-aprimary flex items-center justify-center ">
@@ -24,80 +25,139 @@ export const HeaderLogo = () => {
   );
 };
 
-//Normal Header
 export const Header = ({ page }: { page?: string }) => {
   const user = useSelector(
     (state: RootState) => state?.user?.currentUser?.data
   );
-  const [message, setMessage] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [genres, setGenres] = useState<any>([]);
+  const [errorGenres, setErrorGenres] = useState<any>([]);
   const [tvShows, setTvShows] = useState<any>([]);
+  const [errorTvShows, setErrorTvShows] = useState<any>([]);
+  const [countries, setCountries] = useState<any>([]);
+  const [errorCountries, setErrorCountries] = useState<any>([]);
+  const [years, setYears] = useState<any>([]);
+  const [errorYears, setErrorYears] = useState<any>([]);
 
   const [formData, setFormData] = useState({
     search: "",
   });
+  const [movies, setMovies] = useState<any[]>([]); // Change to array of any
+  const [errorMovies, setErrorMovies] = useState<string | null>(null); // Change to string or null
 
-  const handleChange = (inputType: string, newValue: string) => {
-    setFormData({
-      ...formData,
-      [inputType]: newValue,
-    });
-  };
-
-  //Genre
-  const fetchGenres = async (): Promise<void> => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/genres", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+  const handleChange = async (inputType: string, newValue: string) => {
+    if (inputType === "search") {
+      setFormData({
+        ...formData,
+        search: newValue,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMessage(data.message);
-        return;
+      try {
+        const response = await axios.get<{ data: any[] }>(
+          "movies/search/title",
+          {
+            params: { query: newValue },
+          }
+        );
+        const data = response.data;
+        setMovies(data.data);
+        setErrorMovies(null);
+      } catch (error) {
+        setErrorMovies("No movies found matching the criteria");
+        setMovies([]);
       }
-
-      setGenres(data.data);
-    } catch (error) {
-      setMessage("");
     }
   };
 
-  //TV-Show
-  const fetchTVShow = async (): Promise<void> => {
+  //Fetch Genres
+  const fetchGenres = async (): Promise<void> => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/tv_shows", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMessage(data.message);
+      setLoading(true);
+      const response = await axios.get("/genres");
+      const data = await response.data;
+      if (!data.success === true) {
+        setLoading(false);
+        setErrorGenres(data.message);
         return;
       }
+      setLoading(false);
+      setGenres(data.data);
+    } catch (error) {
+      setLoading(false);
+      setErrorGenres(error);
+    }
+  };
+
+  //Fetch TV-Shows
+  const fetchTvShows = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("tv_shows");
+      const data = await response.data;
+      if (!data.success) {
+        setLoading(false);
+        setErrorTvShows(data.message);
+        return;
+      }
+      setLoading(false);
       setTvShows(data.data);
     } catch (error) {
-      setMessage("");
+      setLoading(false);
+      setErrorTvShows(error);
+    }
+  };
+
+  //Fetch Countries
+  const fetchCountries = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("countries");
+      const data = await response.data;
+
+      if (!data.success) {
+        setLoading(false);
+        setErrorCountries(data.message);
+        return;
+      }
+
+      setLoading(false);
+      setCountries(data.data);
+    } catch (error) {
+      setLoading(false);
+      setErrorCountries(error);
+    }
+  };
+
+  //Fetch years
+  const fetchYears = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const response = await axios.get("years");
+      const data = await response.data;
+
+      if (!data.success) {
+        setLoading(false);
+        setErrorYears(data.message);
+        return;
+      }
+
+      setLoading(false);
+      setYears(data.data);
+    } catch (error) {
+      setLoading(false);
+      setErrorYears(error);
     }
   };
 
   useEffect(() => {
     fetchGenres();
-    fetchTVShow();
+    fetchTvShows();
+    fetchCountries();
+    fetchYears();
   }, []);
 
   return (
     <div className="w-full h-20 border-b-2 border-aprimary flex items-center justify-between pr-3 mb-4 sticky top-0 z-50 ">
       <Logo />
-
       <div className="flex items-center justify-between ">
         <a
           href="/"
@@ -116,7 +176,6 @@ export const Header = ({ page }: { page?: string }) => {
             Home
           </p>
         </a>
-
         <div className="group">
           <a
             href="/movies"
@@ -136,54 +195,58 @@ export const Header = ({ page }: { page?: string }) => {
             </p>
           </a>
           <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
-            {genres ? (
-              genres.map((genre: any, genre_name: string) => (
+            {loading ? (
+              <p>Loading...</p>
+            ) : genres.length > 0 ? (
+              genres.map((genre: any) => (
                 <div key={genre.id}>
-                  <a href={`/movies/${genre.genre_name}`} className="link">
+                  <a href={`/movies/${genre.id}`} className="link">
                     {genre.genre_name}
                   </a>
                 </div>
               ))
             ) : (
-              <div>Loading...</div>
+              <p>{errorGenres}</p>
             )}
           </div>
         </div>
         <div className="group">
           <a
-            href="tv-show"
+            href="/tv-shows"
             className={`relative mx-2 ${
-              page === "tv-show" ? "pointer-events-none" : ""
+              page === "tv-shows" ? "pointer-events-none" : ""
             }`}
           >
             <span className="absolute inset-y-0 left-0 flex items-center bg-transparent sm:display-none">
-              <FaTv fill={page === "tv-show" ? "red" : "white"} />
+              <FaTv fill={page === "tv-shows" ? "red" : "white"} />
             </span>
             <p
               className={`ml-8 ${
-                page === "tv-show" ? "text-aprimary font-bold" : "link"
+                page === "tv-shows" ? "text-aprimary font-bold" : "link"
               } display:block hidden xl:flex`}
             >
               TV-Show
             </p>
           </a>
-          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {tvShows ? (
-              tvShows.map((tvShows: any) => (
-                <div key={tvShows.id}>
-                  <a href={`/tv-show/${tvShows.tvShows_name}`} className="link">
-                    {tvShows.tv_show_name}
+          <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
+            {loading ? (
+              <p>Loading...</p>
+            ) : tvShows.length > 0 ? (
+              tvShows.map((tvShow: any) => (
+                <div key={tvShow.id}>
+                  <a href={`/tv-shows/${tvShow.id}`} className="link">
+                    {tvShow.tv_show_name}
                   </a>
                 </div>
               ))
             ) : (
-              <div>Loading...</div>
+              <p>{errorTvShows}</p>
             )}
           </div>
         </div>
         <div className="group">
           <a
-            href="countries"
+            href="/countries"
             className={`relative mx-2 ${
               page === "countries" ? "pointer-events-none" : ""
             }`}
@@ -199,23 +262,28 @@ export const Header = ({ page }: { page?: string }) => {
               Countries
             </p>
           </a>
-          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {genres ? (
-              genres.map((genre: any) => (
-                <div key={genre.id}>
-                  <a href="" className="link">
-                    {genre.genre_name}
+          <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
+            {loading ? (
+              <p>Loading...</p>
+            ) : countries.length > 0 ? (
+              countries.map((country: any) => (
+                <div key={country.id}>
+                  <a
+                    href={`/countries/${country.country_code}`}
+                    className="link"
+                  >
+                    {country.country_name}
                   </a>
                 </div>
               ))
             ) : (
-              <div>Loading...</div>
+              <p>{errorCountries}</p>
             )}
           </div>
         </div>
         <div className="group">
           <a
-            href="years"
+            href="/years"
             className={`relative mx-2 ${
               page === "years" ? "pointer-events-none" : ""
             }`}
@@ -231,23 +299,25 @@ export const Header = ({ page }: { page?: string }) => {
               Years
             </p>
           </a>
-          <div className="absolute top-13 p-4 bg-primary grid grid-cols-3 z-50 gap-4 hidden group-hover:grid">
-            {genres ? (
-              genres.map((genre: any) => (
-                <div key={genre.id}>
-                  <a href="" className="link">
-                    {genre.genre_name}
+          <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
+            {loading ? (
+              <p>Loading...</p>
+            ) : years.length > 0 ? (
+              years.map((year: any) => (
+                <div key={year.id}>
+                  <a href={`/years/${year.year}`} className="link">
+                    {year.year}
                   </a>
                 </div>
               ))
             ) : (
-              <div>Loading...</div>
+              <p>{errorYears}</p>
             )}
           </div>
         </div>
       </div>
       <div className="flex items-center">
-        <form>
+        <form className="w-64 hover">
           <Input
             type="text"
             value={formData.search}
@@ -255,6 +325,40 @@ export const Header = ({ page }: { page?: string }) => {
             placeholder="Search..."
             icon={<FaSearch />}
           />
+          {formData?.search?.length !== 0 ? (
+            <div className="absolute top-13 p-2 w-64 z-50 ">
+              {loading ? (
+                <p>Loading...</p>
+              ) : (
+                movies?.map((movie: any) => (
+                  <a
+                    key={movie.id}
+                    href={`/movies/${movie.id}/detail`}
+                    className="w-full flex my-2"
+                  >
+                    <img
+                      src={movie.poster_image}
+                      alt="poster"
+                      className="w-12 mr-2"
+                    />
+                    <div>
+                      <span className="text-aprimary font-bold">
+                        {movie.title}
+                      </span>
+                      <p className="text-xs">{movie.run_time}min</p>
+                      <p className="text-xs flex items-center">
+                        <FaStar fill="red" />
+                        {movie.average_rating}
+                      </p>
+                    </div>
+                  </a>
+                ))
+              )}
+              {errorMovies && <p>{errorMovies}</p>}
+            </div>
+          ) : (
+            ""
+          )}
         </form>
         <div className="m-2">
           {page === "explore" ? (
@@ -269,7 +373,7 @@ export const Header = ({ page }: { page?: string }) => {
       </div>
       <div className="flex items-center">
         {user ? (
-          <a href="profile" className="flex items-center space-x-2">
+          <a href="/profile" className="flex items-center space-x-2">
             <p> {user.username}</p>
             <img
               src={user.profile}
@@ -278,7 +382,7 @@ export const Header = ({ page }: { page?: string }) => {
             />
           </a>
         ) : (
-          <Link url="signup" title="Account" icon={<FaUserAlt />} />
+          <Link url="/signup" title="Account" icon={<FaUserAlt />} />
         )}
       </div>
     </div>

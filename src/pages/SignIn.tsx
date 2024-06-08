@@ -1,12 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
-import Input from "../components/Input";
 import { HeaderLogo } from "../layout/Header";
 import { Label, LabelInput } from "../components/Label";
-import { ButtonAction, ButtonLink } from "../components/Button";
-import { Link, LinkButton } from "../components/Link";
+import { ButtonAction } from "../components/Button";
+import { Link } from "../components/Link";
 import Footer from "../layout/Footer";
+import Input from "../components/Input";
 import {
-  FaAngleLeft,
   FaArrowLeft,
   FaEye,
   FaEyeSlash,
@@ -23,6 +22,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import OAuth from "../components/OAuth";
 interface SignInForm {
   username_email: string;
   password: string;
@@ -114,15 +114,16 @@ const SignIn = () => {
               )
             }
           />
+          {errorMessage ? (
+            <span className="text-danger">{errorMessage}</span>
+          ) : null}
           <ButtonAction
             disabled={loading}
             text={loading ? "Loading..." : "Sign In"}
             icon={<FaSignInAlt className="bg-transparent" />}
           />
-        </form>{" "}
-        {errorMessage ? (
-          <span className="text-danger">{errorMessage}</span>
-        ) : null}
+        </form>
+        <OAuth />
         <span className="w-96">
           <span className="flex items-center">
             <p className="my-2"> Don't have account? </p>
