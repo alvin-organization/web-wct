@@ -56,6 +56,21 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateRoleStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateRoleSuccess: (state, action) => {
+      if (state.currentUser && state.currentUser.id === action.payload.userId) {
+        state.currentUser.role = action.payload.newRole;
+      }
+      state.loading = false;
+      state.error = null;
+    },
+    updateRoleFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -69,5 +84,8 @@ export const {
   signOutStart,
   signOutSuccess,
   signOutFailure,
+  updateRoleStart,
+  updateRoleSuccess,
+  updateRoleFailure,
 } = userSlice.actions;
 export default userSlice.reducer;

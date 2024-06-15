@@ -5,6 +5,7 @@ import AppLayout from "../../layout/AppLayout";
 import axios from "../../api/axios";
 import Poster from "../../components/Poster";
 import NotFound from "../../components/NotFound";
+import Loading from "../../components/Loading";
 
 const MoviesGenrePage = () => {
   const { id, page } = useParams<{ page: string; id: string }>();
@@ -22,7 +23,7 @@ const MoviesGenrePage = () => {
   const fetchMovieByGenre = async (genreId: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await axios.get(`/movie_gernes/${genreId}/movies`);
+      const response = await axios.get(`/movie_genres/${genreId}/movies`);
       const data = response.data;
       if (!data.success === true) {
         setLoading(false);
@@ -71,6 +72,7 @@ const MoviesGenrePage = () => {
       setErrorTvShow(error);
     }
   };
+
   const fetchTvShowById = async (tvShowId: string): Promise<void> => {
     try {
       setLoading(true);
@@ -126,7 +128,7 @@ const MoviesGenrePage = () => {
   const fetchMovieByYear = async (year: string): Promise<void> => {
     try {
       setLoading(true);
-      const response = await axios.get(`/movies/year/${year}`);
+      const response = await axios.get(`/movies/years/${year}`);
       const data = response.data;
       if (!data.success) {
         setLoading(false);
@@ -156,17 +158,18 @@ const MoviesGenrePage = () => {
       setLabelTitle(id);
     }
   }, [id]);
+
   return (
     <AppLayout>
       <LabelCategory textLabel={labelTitle} />
       {page === "movies" ? (
         <>
           {loading ? (
-            <p>Loading...</p>
-          ) : genreMovies.length > 0 ? (
+            <Loading value="loading..." loading={true} />
+          ) : genreMovies?.length > 0 ? (
             <div className="flex m-4">
-              {genreMovies.map((movie: any, index: number) => (
-                <div key={movie.id || index} className="m-2">
+              {genreMovies?.map((movie: any, index: number) => (
+                <div key={index} className="m-2">
                   <Poster
                     id={movie.id}
                     movieName={movie.title}
@@ -176,16 +179,16 @@ const MoviesGenrePage = () => {
               ))}
             </div>
           ) : (
-            <p>{errorGenre}</p>
+            <Loading value={errorGenre} loading={false} />
           )}
         </>
       ) : page === "tv-shows" ? (
         <>
           {loading ? (
-            <p>Loading...</p>
-          ) : tvShowMovies.length > 0 ? (
+            <Loading value="loading..." loading={true} />
+          ) : tvShowMovies?.length > 0 ? (
             <div className="flex m-4">
-              {tvShowMovies.map((movie: any, index: number) => (
+              {tvShowMovies?.map((movie: any, index: number) => (
                 <div key={movie.id || index} className="m-2">
                   <Poster
                     id={movie.id}
@@ -196,16 +199,16 @@ const MoviesGenrePage = () => {
               ))}
             </div>
           ) : (
-            <p>{errorTvShow}</p>
+            <Loading value={errorTvShow} loading={false} />
           )}
         </>
       ) : page === "years" ? (
         <>
           {loading ? (
-            <p>Loading...</p>
-          ) : yearMovies.length > 0 ? (
+            <Loading value="loading..." loading={true} />
+          ) : yearMovies?.length > 0 ? (
             <div className="flex m-4">
-              {yearMovies.map((movie: any, index: number) => (
+              {yearMovies?.map((movie: any, index: number) => (
                 <div key={movie.id || index} className="m-2">
                   <Poster
                     id={movie.id}
@@ -216,16 +219,16 @@ const MoviesGenrePage = () => {
               ))}
             </div>
           ) : (
-            <p>{errorYear}</p>
+            <Loading value={errorYear} loading={false} />
           )}
         </>
       ) : page === "countries" ? (
         <>
           {loading ? (
-            <p>Loading...</p>
-          ) : countryMovies.length > 0 ? (
+            <Loading value="loading..." loading={true} />
+          ) : countryMovies?.length > 0 ? (
             <div className="flex m-4">
-              {countryMovies.map((movie: any, index: number) => (
+              {countryMovies?.map((movie: any, index: number) => (
                 <div key={movie.id || index} className="m-2">
                   <Poster
                     id={movie.id}
@@ -236,7 +239,7 @@ const MoviesGenrePage = () => {
               ))}
             </div>
           ) : (
-            <p>{errorCountry}</p>
+            <Loading value={errorCountry} loading={false} />
           )}
         </>
       ) : (

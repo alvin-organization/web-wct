@@ -25,7 +25,7 @@ const Explore: React.FC = () => {
     setFormData({ selectedGenres: [] });
     setSelectedTags([]);
     if (selectedTags.length === 0 && formData.selectedGenres.length === 0) {
-      navigate  ("/"); // Redirect to homepage
+      navigate("/"); // Redirect to homepage
     }
   };
 

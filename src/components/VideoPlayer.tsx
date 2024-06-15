@@ -12,6 +12,9 @@ import {
 } from "react-icons/fa";
 import Video from "../assets/Video.mp4";
 import Thumbnail from "../assets/Cover.png";
+interface videoProp{
+  
+} 
 
 const VideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);

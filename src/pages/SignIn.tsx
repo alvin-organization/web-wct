@@ -55,7 +55,7 @@ const SignIn = () => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const response = await fetch("http://127.0.0.1:8000/api/signin", {
+      const response = await fetch("http://127.0.0.1:8000/api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

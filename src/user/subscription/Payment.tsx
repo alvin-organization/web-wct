@@ -13,47 +13,104 @@ import {
 } from "react-icons/fa";
 import AppLayout from "../../layout/AppLayout";
 import { ButtonAction } from "../../components/Button";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import axios from "../../api/axios";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../../app/user/userSlice";
 
 interface PaymentForm {
-  cardNumber: string;
+  card_number: string;
   expiry: string;
   cvv: string;
   name: string;
 }
-const PaymentForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
-    name: "",
-  });
 
+const PaymentForm: React.FC = () => {
   const params = useParams<{ id: string }>();
   const { id } = params;
-
-  const handleChange = (inputType: keyof PaymentForm, newValue: string) => {
-    setFormData({
-      ...formData,
-      [inputType]: newValue,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector(
     (state: RootState) => state?.user?.currentUser?.data
   );
+  const token = user?.api_token;
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [subscriptionPlan, setSubscriptionPlan] = useState<any>([]);
   const [errorSubscriptionPlan, setErrorSubscriptionPlan] = useState<any>([]);
+  const [errorPayment, setErrorPayment] = useState<any>([]);
+  const [formData, setFormData] = useState({
+    card_number: "",
+    expiry: "",
+    cvv: "",
+    name: "",
+    subscription_plan_id: id,
+    user_id: user?.id,
+    amount: 0,
+    description: "Pay for subscription plan!",
+  });
 
-  const token = user?.api_token;
+  const handleChange = (inputType: keyof PaymentForm, newValue: string) => {
+    let value = newValue;
+
+    if (inputType === "expiry") {
+      value = formatExpiry(value);
+    }
+
+    if (inputType === "cvv") {
+      value = formatCvv(value);
+    }
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [inputType]: value,
+    }));
+  };
+
+  const handleImageSelect = (image: string) => {
+    setSelectedImage(image);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      stripeToken: image,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      dispatch(signInStart());
+      console.log(formData);
+      setLoading(true);
+      const response = await axios.post("/payments", formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      if (!data.success) {
+        setLoading(false);
+        dispatch(signInFailure(data.message));
+        setErrorPayment(data.message);
+        console.log(data);
+        return;
+      }
+      dispatch(signInSuccess(data));
+      navigate("/profile");
+      setLoading(false);
+    } catch (error) {
+      dispatch(signInFailure(error));
+      setErrorPayment(error);
+    }
+  };
+
   const fetchSubscriptionPlanById = async (id: string): Promise<void> => {
     try {
       setLoading(true);
@@ -65,25 +122,55 @@ const PaymentForm: React.FC = () => {
       });
 
       const data = response.data;
-      if (!data.success) {
-        setLoading(false);
-        setErrorSubscriptionPlan(data.message);
-        return;
-      }
-      setLoading(false);
+
       setSubscriptionPlan(data.data);
+      setAmount(data.data.subscription_plan_price);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        amount: data.data.subscription_plan_price,
+      }));
+
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       setErrorSubscriptionPlan(error);
     }
   };
-
-  console.log(subscriptionPlan);
 
   useEffect(() => {
     if (id) {
       fetchSubscriptionPlanById(id);
     }
   }, [id]);
+
+  const formatExpiry = (value: string) => {
+    // Allow only digits and slashes
+    value = value.replace(/[^0-9\/]/g, "");
+  
+    // Automatically insert a slash after two digits
+    if (value.length >= 2 && !value.includes("/")) {
+      value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    }
+  
+    // Limit the length to 5 characters (MM/YY)
+    if (value.length > 5) {
+      value = value.slice(0, 5);
+    }
+  
+    // Ensure MM part allows only 1 to 12
+    const month = parseInt(value.slice(0, 2), 10);
+    if (month < 1 || month > 12) {
+      value = "";
+    }
+  
+    return value;
+  };
+  
+
+  const formatCvv = (value: string) => {
+    // Allow only digits and limit to 3 characters
+    return value.replace(/[^0-9]/g, "").slice(0, 3);
+  };
 
   return (
     <AppLayout>
@@ -94,7 +181,7 @@ const PaymentForm: React.FC = () => {
         <span className="mb-2 flex items-center space-x-4 border px-2 border-aprimary bg-aprimary">
           <FaCheck className="bg-transparent" />
           <p className="bg-transparent">
-            You have been select with{" "}
+            You have been selected with{" "}
             <span className="text-yellow-500 font-bold bg-transparent">
               {subscriptionPlan.subscription_plan_name}
             </span>{" "}
@@ -116,56 +203,47 @@ const PaymentForm: React.FC = () => {
           </span>
           <span className="flex items-center space-x-2 my-2 ">
             <FaUser fill="gray" />
-            <p className="flex items-center text-gray-500">Usrename</p>
+            <p className="flex items-center text-gray-500">{user?.username}</p>
           </span>
         </div>
         <div className="flex items-center space-x-4 my-2">
+          <p>Select your payment method </p>
           <img
-            className="h-8"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/1200px-MasterCard_Logo.svg.png"
-            alt=""
-          />
-
-          <img
-            className="h-8"
+            className={`h-8 cursor-pointer ${
+              selectedImage === "tok_visa"
+                ? "border border-2 border-aprimary"
+                : ""
+            }`}
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYPkrXl2UNqKdOlijbtcwzD4LG5DgGiY25i6tqarWsbQ&s"
-            alt=""
+            alt="Visa"
+            onClick={() => handleImageSelect("tok_visa")}
           />
           <img
-            className="h-8"
-            src="https://bacsociety.com/wp-content/uploads/2023/08/logo-Paypal-1.png"
-            alt=""
-          />
-          <img
-            className="h-8"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl_FRK-e2VsvOhbMvo5YtSH61LTHWtmZBiPLJv-xzLAA&s"
-            alt=""
-          />
-          <img
-            className="h-8"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLMfBk43FayavSntfZpvuPE714Q4-DYibTqE5-Yl12Nw&s"
-            alt=""
+            className={`h-8 cursor-pointer ${
+              selectedImage === "tok_mastercard"
+                ? "border border-2 border-aprimary"
+                : ""
+            }`}
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/1200px-MasterCard_Logo.svg.png"
+            alt="MasterCard"
+            onClick={() => handleImageSelect("tok_mastercard")}
           />
         </div>
         <form onSubmit={handleSubmit} className="mt-4">
           <div className="mb-4">
             <LabelInput textLabel="Card Number" />
             <Input
-              id="cardNumber"
+              id="card_number"
               type="text"
-              value={formData.cardNumber}
-              onChange={(value) => handleChange("cardNumber", value)}
+              value={formData.card_number}
+              onChange={(value) => handleChange("card_number", value)}
               placeholder="Enter Card Number"
               icon={<FaCreditCard />}
             />
           </div>
           <div className="mb-4 flex justify-between">
             <div className="w-1/3">
-              {/* <label htmlFor="expiry" className="block mb-1">
-                Expiry
-              </label> */}
               <LabelInput textLabel="Expiry" />
-
               <Input
                 id="expiry"
                 type="text"
@@ -176,15 +254,11 @@ const PaymentForm: React.FC = () => {
               />
             </div>
             <div>
-              {/* <label htmlFor="cvv" className="block mb-1">
-                CVV
-              </label> */}
               <LabelInput textLabel="CVV" />
-
               <Input
                 id="cvv"
                 type="text"
-                value={formData.expiry}
+                value={formData.cvv}
                 onChange={(value) => handleChange("cvv", value)}
                 placeholder="CVV"
                 icon={<FaLock />}
@@ -192,9 +266,6 @@ const PaymentForm: React.FC = () => {
             </div>
           </div>
           <div className="mb-4">
-            {/* <label htmlFor="name" className="block mb-1">
-              Cardholder's Name
-            </label> */}
             <LabelInput textLabel="Cardholder's Name" />
             <Input
               id="name"
@@ -210,6 +281,7 @@ const PaymentForm: React.FC = () => {
             icon={<FaWallet className="bg-transparent" />}
           />
         </form>
+        {errorPayment && <p className="text-aprimary">{errorPayment}</p>}
       </div>
     </AppLayout>
   );

@@ -1,12 +1,11 @@
 import { useParams } from "react-router-dom";
-import MovieList from "../../components/MovieList";
 import AppLayout from "../../layout/AppLayout";
 import { LabelCategory } from "../../components/Label";
-import NotFoundPage from "../NotFoundPage";
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import Poster from "../../components/Poster";
 import NotFound from "../../components/NotFound";
+import Loading from "../../components/Loading";
 
 const MoviesPage = () => {
   const params = useParams<{ page: string }>();
@@ -129,10 +128,10 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Movies" />
             {loading ? (
-              <p>Loading...</p>
-            ) : movies.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : movies?.length > 0 ? (
               <div className="flex m-4">
-                {movies.map((movie: any, index: number) => (
+                {movies?.map((movie: any, index: number) => (
                   <div key={movie.id || index} className="m-2">
                     <Poster
                       id={movie.id}
@@ -150,11 +149,11 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="TV-Shows" />
             {loading ? (
-              <p>Loading...</p>
-            ) : movies.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : movies?.length > 0 ? (
               <div className="flex m-4">
                 {movies
-                  .filter((movie: any) => movie.tv_show_id !== null)
+                  ?.filter((movie: any) => movie.tv_show_id !== null)
                   .map((movie: any, index: number) => (
                     <div key={movie.id || index} className="m-2">
                       <Poster
@@ -173,11 +172,11 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Years" />
             {loading ? (
-              <p>Loading...</p>
-            ) : movies.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : movies?.length > 0 ? (
               <div className="flex m-4">
                 {movies
-                  .sort(
+                  ?.sort(
                     (a: any, b: any) =>
                       new Date(b.release_date).getTime() -
                       new Date(a.release_date).getTime()
@@ -200,11 +199,11 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Countries" />
             {loading ? (
-              <p>Loading...</p>
-            ) : countryMovies.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : countryMovies?.length > 0 ? (
               <div className="flex m-4">
                 {countryMovies
-                  .filter((movie: any) => movie.country_code) // Filter out movies with undefined country_code
+                  ?.filter((movie: any) => movie.country_code) // Filter out movies with undefined country_code
                   .slice()
                   .sort((a: any, b: any) => {
                     return a.country_code
@@ -229,10 +228,10 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Popular" />
             {loading ? (
-              <p>Loading...</p>
-            ) : moviesPopluar.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : moviesPopluar?.length > 0 ? (
               <div className="flex m-4">
-                {moviesPopluar.map((movie: any, index: number) => (
+                {moviesPopluar?.map((movie: any, index: number) => (
                   <div key={movie.id || index} className="m-2">
                     <Poster
                       id={movie.id}
@@ -250,10 +249,10 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Top Rated" />
             {loading ? (
-              <p>Loading...</p>
-            ) : moviesTopRated.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : moviesTopRated?.length > 0 ? (
               <div className="flex m-4">
-                {moviesTopRated.map((movie: any, index: number) => (
+                {moviesTopRated?.map((movie: any, index: number) => (
                   <div key={movie.id || index} className="m-2">
                     <Poster
                       id={movie.id}
@@ -271,10 +270,10 @@ const MoviesPage = () => {
           <>
             <LabelCategory textLabel="Latest Movies" />
             {loading ? (
-              <p>Loading...</p>
-            ) : moviesLatest.length > 0 ? (
+              <Loading value="loading..." loading={true} />
+            ) : moviesLatest?.length > 0 ? (
               <div className="flex m-4">
-                {moviesLatest.map((movie: any, index: number) => (
+                {moviesLatest?.map((movie: any, index: number) => (
                   <div key={movie.id || index} className="m-2">
                     <Poster
                       id={movie.id}

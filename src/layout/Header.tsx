@@ -4,6 +4,7 @@ import { Link, LinkDisabled } from "../components/Link";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import {
+  FaBell,
   FaCalendarAlt,
   FaCompass,
   FaFilm,
@@ -16,6 +17,7 @@ import {
 } from "react-icons/fa";
 import Input from "../components/Input";
 import axios from "../api/axios";
+import Loading from "../components/Loading";
 
 export const HeaderLogo = () => {
   return (
@@ -196,7 +198,7 @@ export const Header = ({ page }: { page?: string }) => {
           </a>
           <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
             {loading ? (
-              <p>Loading...</p>
+              <Loading value="loading..." />
             ) : genres.length > 0 ? (
               genres.map((genre: any) => (
                 <div key={genre.id}>
@@ -230,7 +232,7 @@ export const Header = ({ page }: { page?: string }) => {
           </a>
           <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
             {loading ? (
-              <p>Loading...</p>
+              <Loading value="loading..." />
             ) : tvShows.length > 0 ? (
               tvShows.map((tvShow: any) => (
                 <div key={tvShow.id}>
@@ -264,7 +266,7 @@ export const Header = ({ page }: { page?: string }) => {
           </a>
           <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
             {loading ? (
-              <p>Loading...</p>
+              <Loading value="loading..." />
             ) : countries.length > 0 ? (
               countries.map((country: any) => (
                 <div key={country.id}>
@@ -301,7 +303,7 @@ export const Header = ({ page }: { page?: string }) => {
           </a>
           <div className="absolute top-13 p-2 bg-primary grid grid-cols-3 z-50 gap-7 hidden group-hover:grid">
             {loading ? (
-              <p>Loading...</p>
+              <Loading value="loading..." />
             ) : years.length > 0 ? (
               years.map((year: any) => (
                 <div key={year.id}>
@@ -328,7 +330,7 @@ export const Header = ({ page }: { page?: string }) => {
           {formData?.search?.length !== 0 ? (
             <div className="absolute top-13 p-2 w-64 z-50 ">
               {loading ? (
-                <p>Loading...</p>
+                <Loading value="loading..." />
               ) : (
                 movies?.map((movie: any) => (
                   <a
@@ -360,7 +362,7 @@ export const Header = ({ page }: { page?: string }) => {
             ""
           )}
         </form>
-        <div className="m-2">
+        <div className="m-2 flex items-center space-x-2">
           {page === "explore" ? (
             <LinkDisabled
               title="Explore"
@@ -369,6 +371,7 @@ export const Header = ({ page }: { page?: string }) => {
           ) : (
             <Link url="/explore" title="Explore" icon={<FaCompass />} />
           )}
+          {user?.role === "User Subscription" ? <FaBell /> : ""}
         </div>
       </div>
       <div className="flex items-center">

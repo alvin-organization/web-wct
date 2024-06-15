@@ -59,8 +59,6 @@ const Setting = () => {
     e.preventDefault();
   };
 
-  console.log(setFormData);
-
   return (
     <AppLayout>
       <div className="flex flex-col items-center w-1/2 m-auto">

@@ -5,11 +5,12 @@ import { LabelCategory } from "../components/Label";
 import AppLayout from "../layout/AppLayout";
 import Slider from "react-slick";
 import Poster from "../components/Poster";
-import MovieList from "../components/MovieList";
 import axios from "../api/axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Pusher from "pusher-js";
+import Loading from "../components/Loading";
+import echo from "../utils/echo";
 
 interface Movie {
   id: number;
@@ -180,33 +181,42 @@ const HomePage: React.FC = () => {
             <FaAngleLeft className="arrow-slide" />
           </button>
         </div>
-        <Slider ref={sliderRef} {...settings} className="silder">
-          {movies?.map((movie: any) => (
-            <SliderGroup
-              key={movie.id}
-              id={movie.id}
-              imageUrl={movie.cover_image}
-              title={movie.title}
-              description={movie.overview}
-              genre={movieGenres
-                ?.filter((movieGenre: any) => movieGenre.movie_id === movie.id)
-                .map((movieGenre: any, index: number) => (
-                  <span key={movieGenre.id || index} className="space-x-2 ml-2">
-                    <a
-                      href={`/movies/${movieGenre.genre_id}`}
-                      key={movieGenre.id}
-                      className="hover:font-bold text-aprimary"
+        {loading ? (
+          <Loading value="loading..." loading={true} />
+        ) : (
+          <Slider ref={sliderRef} {...settings} className="silder">
+            {movies?.map((movie: any) => (
+              <SliderGroup
+                key={movie.id}
+                id={movie.id}
+                imageUrl={movie.cover_image}
+                title={movie.title}
+                description={movie.overview}
+                genre={movieGenres
+                  ?.filter(
+                    (movieGenre: any) => movieGenre.movie_id === movie.id
+                  )
+                  .map((movieGenre: any, index: number) => (
+                    <span
+                      key={movieGenre.id || index}
+                      className="space-x-2 ml-2"
                     >
-                      {movieGenre.genre_name}
-                    </a>
-                  </span>
-                ))}
-              duration={movie.run_time}
-              releaseYear={movie.release_date}
-              imdb={movie.average_rating}
-            />
-          ))}
-        </Slider>
+                      <a
+                        href={`/movies/${movieGenre.genre_id}`}
+                        key={movieGenre.id}
+                        className="hover:font-bold text-aprimary"
+                      >
+                        {movieGenre.genre_name}
+                      </a>
+                    </span>
+                  ))}
+                duration={movie.run_time}
+                releaseYear={movie.release_date}
+                imdb={movie.average_rating}
+              />
+            ))}
+          </Slider>
+        )}
         <div className="btn-arrow">
           <button onClick={handleNextSlide}>
             <FaAngleRight className="arrow-slide" />
@@ -220,7 +230,7 @@ const HomePage: React.FC = () => {
         linkValue="See more"
       />
       {loading ? (
-        <p>Loading...</p>
+        <Loading value="loading..." loading={true} />
       ) : moviesPopluar?.length > 0 ? (
         <div className="flex m-4">
           {moviesPopluar?.map((movie: any) => (
@@ -243,7 +253,7 @@ const HomePage: React.FC = () => {
         linkValue="See more"
       />
       {loading ? (
-        <p>Loading...</p>
+        <Loading value="loading..." loading={true} />
       ) : moviesTopRated?.length > 0 ? (
         <div className="flex m-4">
           {moviesTopRated?.map((movie: any) => (
@@ -266,7 +276,7 @@ const HomePage: React.FC = () => {
         linkValue="See more"
       />
       {loading ? (
-        <p>Loading...</p>
+        <Loading value="loading..." loading={true} />
       ) : moviesLatest?.length > 0 ? (
         <div className="flex m-4">
           {moviesLatest?.map((movie: any) => (
@@ -284,7 +294,7 @@ const HomePage: React.FC = () => {
       )}
       <LabelCategory htmlFor="all-movies" textLabel="All Movies" />
       {loading ? (
-        <p>Loading...</p>
+        <Loading value="loading..." loading={true} />
       ) : moviesLatest?.length > 0 ? (
         <div className="flex m-4">
           {moviesLatest

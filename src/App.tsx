@@ -18,14 +18,17 @@ import Profile from "./user/Profile";
 import Setting from "./user/Setting";
 import Subscription from "./user/subscription/Subscription";
 import PaymentForm from "./user/subscription/Payment";
-import AText from "./components/AText";
 import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/movies/MoviesPage";
 import MoviesGenrePage from "./pages/movies/MoviesGenrePage";
 import PrivateRouteUser from "./components/private_route/PrivateRouteUser";
 import PrivateRouteGuest from "./components/private_route/PrivateRouteGuest";
+import Save from "./user/Save";
+import History from "./user/History";
+import MySubscription from "./user/subscription/MySubscription";
 
 const App: React.FC = () => {
+  const targetDate = new Date("2024-12-31T23:59:59");
   return (
     <Router>
       <Routes>
@@ -55,8 +58,15 @@ const App: React.FC = () => {
           <Route path="/profile/setting" element={<Setting />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/subscription/:id/payment" element={<PaymentForm />} />
+          <Route path="/save-movies" element={<Save />} />
+          <Route path="/history-movies" element={<History />} />
           <Route path="/movies/:id/play" element={<MoviePlay />} />
         </Route>
+
+        <Route
+          path="/my-subscription"
+          element={<MySubscription />}
+        />
 
         {/* Routes for Admin */}
         <Route path="/admin/signup" element={<SignUpAdmin />} />

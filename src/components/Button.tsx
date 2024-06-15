@@ -8,7 +8,7 @@ interface ButtonLinkProps {
 
 export const ButtonLink: React.FC<ButtonLinkProps> = ({ href, icon, text }) => {
   return (
-    <div className="relative my-2 border border-secondary rounded bg-aprimary py-1 ">
+    <div className="relative my-2 border border-secondary rounded bg-transparent py-1 ">
       {icon && (
         <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none bg-transparent">
           {icon}
@@ -39,7 +39,7 @@ export const ButtonAction: React.FC<ButtonActionProps> = ({
   disabled = false, // Default value for disabled prop
 }) => {
   return (
-    <div className="relative my-2 mx-0">
+    <div className="relative my-2 mx-0 bg-transparent">
       {icon && (
         <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none bg-transparent">
           {icon}
